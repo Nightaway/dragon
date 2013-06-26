@@ -1,0 +1,1 @@
+--add-module=src/cxxmvc --with-cc-opt='-I/root/Desktop/3.0/libDragon/src -I/root/libDapmvc/src'

@@ -24,7 +24,7 @@ Handle<Object> JavaSciprtHttpProcess::WrapRequest(HttpRequest *request)
 
 	if (requestTemplate.IsEmpty()) {
 		Handle<ObjectTemplate> objTemplate = MakeHttpRquestTemplate();
-		requestTemplate = Persistent<ObjectTemplate>::New(jsc_.GetIsolate(), objTemplate);
+		requestTemplate.Reset(jsc_.GetIsolate(), objTemplate);
 	}
 	Handle<ObjectTemplate> templ = Local<ObjectTemplate>::New(jsc_.GetIsolate(), requestTemplate);
 	Handle<Object> obj = templ->NewInstance();
@@ -47,7 +47,7 @@ Handle<Object> JavaSciprtHttpProcess::WrapResponse(HttpResponse *response)
 
 	if (responseTemplate.IsEmpty()) {
 		Handle<ObjectTemplate> objTemplate = MakeHttpResponseTemplate();
-		responseTemplate = Persistent<ObjectTemplate>::New(jsc_.GetIsolate(), objTemplate);
+		responseTemplate.Reset(jsc_.GetIsolate(), objTemplate);
 	}
 	Handle<ObjectTemplate> templ = Local<ObjectTemplate>::New(jsc_.GetIsolate(), responseTemplate);
 	Handle<Object> obj = templ->NewInstance();
@@ -218,9 +218,9 @@ Handle<Object> JavaSciprtHttpProcess::WrapMap(std::map<std::string, std::string>
 
 	if (mapTemplate.IsEmpty()) {
 		Handle<ObjectTemplate> objT= MakeMapTemplate(isolate);
-		mapTemplate = Persistent<ObjectTemplate>::New(isolate ,objT);
+		mapTemplate.Reset(isolate ,objT);
 	}
-	Handle<ObjectTemplate>templ = mapTemplate;
+	Handle<ObjectTemplate> templ = Local<ObjectTemplate>::New(isolate, mapTemplate);
 	Handle<Object> obj = templ->NewInstance();
 	Handle<External> map_ptr = External::New(map);
 	obj->SetInternalField(0, map_ptr);
@@ -328,8 +328,9 @@ void JavaSciprtHttpProcess::process(HttpRequest &request,
 	jsc.Reload(source.id_);
 
 	Handle<String> act_name = String::New(ActionName.c_str());
-	Context::Scope scope_ctx(source.ctx_);
-	Handle<Value> act = source.ctx_->Global()->Get(act_name);
+	Handle<Context> ctx = Local<Context>::New(jsc.GetIsolate(), source.ctx_);
+	Context::Scope scope_ctx(ctx);
+	Handle<Value> act = ctx->Global()->Get(act_name);
 
 	if (act->IsUndefined()) {
 		std::string errMsg = "Not Found Any Action Name : ";
@@ -356,15 +357,15 @@ void JavaSciprtHttpProcess::process(HttpRequest &request,
 	Handle<Function> act_func = Handle<Function>::Cast(act);
 	
 	Handle<Object> lib_obj = jsc.WrapLibrary();
-	source.ctx_->Global()->Set(String::NewSymbol("Library"), lib_obj);
+	ctx->Global()->Set(String::NewSymbol("Library"), lib_obj);
 	Handle<Object> compiler_obj = jsc.Wrap();
-	source.ctx_->Global()->Set(String::New("Compiler"), compiler_obj);
+	ctx->Global()->Set(String::New("Compiler"), compiler_obj);
 
 	const int argc = 2;
 	Handle<Object> request_obj = WrapRequest(&request);
 	Handle<Object> response_obj = WrapResponse(&response);
 	Handle<Value> argv[argc] = { request_obj, response_obj };
-	Handle<Value> result = act_func->Call(source.ctx_->Global(), argc, argv);
+	Handle<Value> result = act_func->Call(ctx->Global(), argc, argv);
 	 
 	if (!result.IsEmpty()) {
 		if (result->IsObject()) {

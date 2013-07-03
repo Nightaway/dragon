@@ -35,6 +35,7 @@ static Handle<ObjectTemplate> MakeCompilerTemplate(Isolate *isolate)
 
 	return scope.Close(objT);
 }
+
 static Handle<ObjectTemplate>MakeLibraryTemplate(Isolate *isolate)
 {
 	HandleScope scope(isolate);
@@ -58,9 +59,10 @@ Handle<Object> JavaScriptCompiler::Wrap()
 
 	if (CompilerTemplate.IsEmpty()) {
 		Handle<ObjectTemplate> temp = MakeCompilerTemplate(isolate_);
-		CompilerTemplate = Persistent<ObjectTemplate>::New(isolate_, temp);
+		CompilerTemplate.Reset(isolate_, temp);
 	}
-	Handle<Object> obj= CompilerTemplate->NewInstance();
+	Handle<ObjectTemplate> objT = Local<ObjectTemplate>::New(isolate_, CompilerTemplate);
+	Handle<Object> obj= objT->NewInstance();
 	Handle<External> ptr = External::New(this);
 	obj->SetInternalField(0, ptr);
 
@@ -73,9 +75,10 @@ Handle<Object> JavaScriptCompiler::WrapLibrary()
 
 	if (LibraryTempl.IsEmpty()) {
 		Handle<ObjectTemplate> templ = MakeLibraryTemplate(isolate_);
-		LibraryTempl = Persistent<ObjectTemplate>::New(isolate_, templ);
+		LibraryTempl.Reset(isolate_, templ);
 	}
-	Handle<Object> obj= LibraryTempl->NewInstance();
+	Handle<ObjectTemplate> objT =Local<ObjectTemplate>::New(isolate_, LibraryTempl);
+	Handle<Object> obj= objT->NewInstance();
 	Handle<External> ptr = External::New(&libs_);
 	obj->SetInternalField(0, ptr);
 
@@ -106,13 +109,15 @@ Handle<Object>JavaScriptCompiler::Export(JavasScriptLibrary &library,
 
 	if (ExportTemplate.IsEmpty()) {
 		Handle<ObjectTemplate> temp = MakeExportTemplate(isolate_);
-		ExportTemplate = Persistent<ObjectTemplate>::New(isolate_, temp);
+		ExportTemplate.Reset(isolate_, temp);
 	}
-	Handle<Object> exports =ExportTemplate->NewInstance();
+	Handle<ObjectTemplate> objT = Local<ObjectTemplate>::New(isolate_, ExportTemplate);
+	Handle<Object> exports = objT->NewInstance();
 
 	const int argc = 1;
+	Handle<Context> ctx = Local<Context>::New(isolate_, library.ctx_); 
 	Handle<Value> argv[argc] = { exports };
-	Handle<Value> result_t = func->Call(library.ctx_->Global(), argc, argv);
+	Handle<Value> result_t = func->Call(ctx->Global(), argc, argv);
 	Handle<Object> obj  = Handle<Object>::Cast(result_t);
 	TryCatch try_catch;
 	if (obj.IsEmpty()) {
@@ -195,7 +200,8 @@ void JavaScriptCompiler::Load(const std::string &AppPath)
 
 			Handle<String> source = LoadJavaScriptSource(jss.path_);
 
-			Context::Scope scope_ctx(jss.ctx_);
+			Handle<Context> ctx = Local<Context>::New(isolate_, jss.ctx_);
+			Context::Scope scope_ctx(ctx);
 			if (ExecuteScript(source).IsEmpty()) {
 				fprintf(stderr, "error in %s", jss.path_.c_str());
 				exit(1);
@@ -217,9 +223,10 @@ void JavaScriptCompiler::LoadLibs(const std::string &AppPath)
 		jss.ctx_.Reset(GetIsolate(), Context::New(GetIsolate())); 
 
 		MySQLContext *ctx =  new MySQLContext();
-		Context::Scope scope_ctx(jss.ctx_);
+		Handle<Context> v8ctx = Local<Context>::New(isolate_, jss.ctx_);
+		Context::Scope scope_ctx(v8ctx);
 		Handle<Object> ctx_obj = WrapMySQLContext(ctx, GetIsolate());
-		jss.obj_ = Persistent<Object>::New(isolate_, ctx_obj);
+		jss.obj_.Reset(isolate_, ctx_obj);
 		libs_[jss.id_] = jss;
 	}
 
@@ -237,12 +244,13 @@ void JavaScriptCompiler::LoadLibs(const std::string &AppPath)
 
 			Handle<String> source = LoadJavaScriptSource(jss.path_, true);
 
-			Context::Scope scope_ctx(jss.ctx_);
+			Handle<Context> v8ctx = Local<Context>::New(isolate_, jss.ctx_);
+			Context::Scope scope_ctx(v8ctx);
 			Handle<Object> libraryObj = WrapLibrary();
-			jss.ctx_->Global()->Set(String::New("Library"), libraryObj);
+			v8ctx->Global()->Set(String::New("Library"), libraryObj);
 
 			Handle<Object> compilerObj = Wrap();
-			jss.ctx_->Global()->Set(String::New("Compiler"), compilerObj);
+			v8ctx->Global()->Set(String::New("Compiler"), compilerObj);
 
 			Handle<Value> result = ExecuteScript(source);
 			if (result.IsEmpty()) {
@@ -252,7 +260,7 @@ void JavaScriptCompiler::LoadLibs(const std::string &AppPath)
 
 			Handle<Function> func = Handle<Function>::Cast(result);
 			Handle<Object> exports = Export(jss, func);
-			jss.obj_ = Persistent<Object>::New(isolate_, exports);
+			jss.obj_.Reset(isolate_, exports);
 			libs_[jss.id_] = jss;
 		}
 	}
@@ -264,7 +272,8 @@ void JavaScriptCompiler::Reload(const std::string &id)
 	filesystem::path js_path(jss.path_);
 	if (jss.lastModified_ != last_write_time(js_path)) {
 		Handle<String> source = LoadJavaScriptSource(jss.path_);
-		Context::Scope scope_ctx(jss.ctx_);
+		Handle<Context> ctx = Local<Context>::New(isolate_, jss.ctx_);
+		Context::Scope scope_ctx(ctx);
 		if (ExecuteScript(source).IsEmpty()) {
 				fprintf(stderr, "Reload Script Error : %s", jss.path_.c_str());
 				exit(1);
@@ -278,7 +287,8 @@ void JavaScriptCompiler::ReloadLib(const std::string &id)
 	filesystem::path js_path(jss.path_);
 	if (jss.lastModified_ != last_write_time(js_path)) {
 		Handle<String> source = LoadJavaScriptSource(jss.path_, true);
-		Context::Scope scope_ctx(jss.ctx_);
+		Handle<Context> ctx = Local<Context>::New(isolate_, jss.ctx_);
+		Context::Scope scope_ctx(ctx);
 		Handle<Value> result = ExecuteScript(source);
 		if (result.IsEmpty()) {
 			fprintf(stderr, "error in %s", jss.path_.c_str());
@@ -286,9 +296,7 @@ void JavaScriptCompiler::ReloadLib(const std::string &id)
 		}
 
 		Handle<Object> exports = Export(jss, Handle<Function>::Cast(result));
-
-		jss.obj_.Dispose();
-		jss.obj_ = Persistent<Object>::New(isolate_, exports);
+		jss.obj_.Reset(isolate_, exports);
 	}
 }
 
@@ -328,7 +336,8 @@ static Handle<Value> LoadCallback(const Arguments& args)
 			return Undefined();
 	}
 
-	return iter->second.obj_;
+	Handle<Object> obj = Local<Object>::New(args.GetIsolate(), iter->second.obj_);
+	return obj;
 }
 
 static Handle<Value> LoadLibraryCallback(const Arguments& args)
@@ -343,5 +352,6 @@ static Handle<Value> LoadLibraryCallback(const Arguments& args)
 
 	c->ReloadLib(*strId);
 
-	return c->GetLibraryMap()[*strId].obj_;
+	Handle<Object> obj = Local<Object>::New(args.GetIsolate(), c->GetLibraryMap()[*strId].obj_);
+	return obj;
 }

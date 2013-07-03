@@ -118,9 +118,9 @@ Handle<Object> dragon::WrapMySQLContext(MySQLContext *ctx, Isolate *isolate)
 	HandleScope scope(isolate);
 	if (MySQLContextTempl.IsEmpty()) {
 		Handle<ObjectTemplate> temp = MakeMySQLContextTmpl(isolate);
-		MySQLContextTempl = Persistent<ObjectTemplate>::New(isolate, temp);
+		MySQLContextTempl.Reset(isolate, temp);
 	}
-	Handle<ObjectTemplate> objT = MySQLContextTempl;
+	Handle<ObjectTemplate> objT = Local<ObjectTemplate>::New(isolate, MySQLContextTempl);
 	Handle<Object> obj = objT->NewInstance();
 	Handle<External> ptr = External::New(ctx);
 	obj->SetInternalField(0, ptr);
@@ -140,9 +140,9 @@ Handle<Object> WrapMySQLConnection(Isolate *isolate, sql::Connection *conn)
 	HandleScope scope(isolate);
 	if (MySQLConnectionTempl.IsEmpty()) {
 		Handle<ObjectTemplate> tmpl = MakeMySQLConnectionTmpl(isolate);
-		MySQLConnectionTempl = Persistent<ObjectTemplate>::New(isolate, tmpl);
+		MySQLConnectionTempl.Reset(isolate, tmpl);
 	}
-	Handle<ObjectTemplate> objT = MySQLConnectionTempl;
+	Handle<ObjectTemplate> objT = Local<ObjectTemplate>::New(isolate, MySQLConnectionTempl);
 	Handle<Object> obj = objT->NewInstance();
 	Handle<External> ptr = External::New(conn);
 	obj->SetInternalField(0, ptr);
@@ -161,9 +161,9 @@ Handle<Object> WrapMySQLPreparedStmt(sql::PreparedStatement *prep_stmt, Isolate 
 	HandleScope scope(isolate);
 	if (MySQLPreparedStatement.IsEmpty()) {
 		Handle<ObjectTemplate> temp = MakeMySQLPreparedStatementTmpl(isolate);
-		MySQLPreparedStatement = Persistent<ObjectTemplate>::New(isolate, temp);
+		MySQLPreparedStatement.Reset(isolate, temp);
 	}
-	Handle<ObjectTemplate> objT = MySQLPreparedStatement;
+	Handle<ObjectTemplate> objT = Local<ObjectTemplate>::New(isolate, MySQLPreparedStatement);
 	Handle<Object> obj = objT->NewInstance();
 	Handle<External> ptr = External::New(prep_stmt);
 	obj->SetInternalField(0, ptr);
@@ -183,9 +183,9 @@ Handle<Object> WrapMySQLResultSet(sql::ResultSet *rs, Isolate *isolate)
 	HandleScope scope(isolate);
 	if (MySQLResultSetTempl.IsEmpty()) {
 		Handle<ObjectTemplate> temp = MakeMySQLResultSet(isolate);
-		MySQLResultSetTempl = Persistent<ObjectTemplate>::New(isolate, temp);
+		MySQLResultSetTempl.Reset(isolate, temp);
 	}
-	Handle<ObjectTemplate> objT = MySQLResultSetTempl;
+	Handle<ObjectTemplate> objT = Local<ObjectTemplate>::New(isolate, MySQLResultSetTempl);
 	Handle<Object> obj = objT->NewInstance();
 	Handle<External> ptr = External::New(rs);
 	obj->SetInternalField(0, ptr);
@@ -328,7 +328,7 @@ static Handle<Value> getCallback(const Arguments& args)
 	const String::Utf8Value strName(name);
 
 	sql::ResultSetMetaData *rsm =rs->getMetaData();
-	for (int i=1; i<rsm->getColumnCount(); ++i)
+	for (unsigned i=1; i<rsm->getColumnCount(); ++i)
 	{
 	//	std::cout << rsm->getColumnName(i) << std::endl;
 		if (*strName != rsm->getColumnName(i)) {

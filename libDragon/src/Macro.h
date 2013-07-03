@@ -1,6 +1,8 @@
 #ifndef __MACRO_H__
 #define __MACRO_H__
 
+#define V8_USE_UNSAFE_HANDLES
+
 #define NS_DRAGON namespace dragon {
 #define NS_CORE namespace core {
 #define USING_NS_V8 using namespace v8;

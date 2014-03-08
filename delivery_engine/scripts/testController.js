@@ -7,6 +7,7 @@ var config = {
 };
 
 function ad(QueryString) {
+	info.log('Hello!');
 	console.log(QueryString['index'] + '\n');
 	console.log(JSON.stringify(request) + '\n');
 

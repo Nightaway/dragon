@@ -26,14 +26,15 @@ NS_DRAGON
        typedef std::pair<std::string, JavaScriptSource *> SourcePair_t;
        typedef std::map<std::string, JavaScriptSource *>  SourceMap;
        typedef std::map<std::string, JavaScriptLibrary *> LibraryMap;
+       typedef std::pair<std::string, JavaScriptModule *> ModulePair_t;
        typedef std::map<std::string, JavaScriptModule *>  ModuleMap;	
 
        class JavaScriptCompiler {
                 SourceMap sources_;
                 LibraryMap librarys_;
 		ModuleMap  modules_;
-                v8::Isolate *isolate_;
 
+                v8::Isolate *isolate_;
                 v8::Handle<v8::String>  LoadJavaScriptSource(const std::string &path, bool isLib = false);
                 v8::Handle<v8::Object>  Export(JavaScriptLibrary &library, v8::Handle<v8::Function> func);
 
@@ -42,11 +43,13 @@ NS_DRAGON
                 ~JavaScriptCompiler() {}
 
                 void Load(const std::string &AppPath, const std::string &prefix);
-                void LoadLibs(const std::string &AppPath);
+                void LoadLibrary(const std::string &AppPath);
+
+		void AddModule(const std::string name, JavaScriptModule *);
 
                 v8::Handle<v8::Value> ExecuteScript(v8::Handle<v8::String>source);
 
-                v8::Handle<v8::Object> WrapLibrary();
+                //v8::Handle<v8::Object> WrapLibrary();
                 v8::Handle<v8::Object> Wrap();
 
                 v8::Isolate *GetIsolate()

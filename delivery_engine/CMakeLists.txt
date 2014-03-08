@@ -34,6 +34,7 @@ configure_file (
 add_library(DE SHARED ${src_list})
 install(TARGETS DE DESTINATION lib)
 install(DIRECTORY logs DESTINATION DE)
-install(DIRECTORY src/Scripts DESTINATION DE)
+install(DIRECTORY scripts DESTINATION DE)
+install(FILES App.conf       DESTINATION DE/conf)
 install(FILES ${app_header_list}        DESTINATION include/DE/)
 install(FILES ${controller_header_list} DESTINATION include/DE/Controllers)

@@ -2,11 +2,13 @@
 #define __WRAPPER_H__
 
 #include "../core/Macro.h"
+#include "../core/StdType.h"
 #include "../core/QueryString.h"
 #include "../http/HttpRequest.h"
 #include "../http/HttpResponse.h"
 
 #include <v8.h>
+#include <map>
 
 NS_DRAGON
 
@@ -29,6 +31,7 @@ public:
 	static v8::Handle<v8::Object> wrap(v8::Isolate *isolate, HttpRequest  &req);
 	static v8::Handle<v8::Object> wrap(v8::Isolate *isolate, HttpResponse &res);
 	static v8::Handle<v8::Object> wrap(v8::Isolate *isolate, QueryString &qs);
+	static v8::Handle<v8::Object> wrapKV(v8::Isolate *isolate, key_value_t &kv);
 };
 
 NS_END

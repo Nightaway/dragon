@@ -12,7 +12,7 @@ void DEApplication::Start()
 	Application::Start();
 	std::cout << "DE Start at path:" << appPath_ << std::endl;
 
-	deliveryController::InitClass_();
+	ADD_CONTROLLER(deliveryController)
 }
 
 void DEApplication::End()

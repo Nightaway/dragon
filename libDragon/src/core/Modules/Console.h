@@ -5,7 +5,7 @@
 #include "../Module.h"
 
 NS_DRAGON
-	
+
 	class Console :
 			public JavaScriptModule {
 

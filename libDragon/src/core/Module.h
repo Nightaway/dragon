@@ -9,10 +9,12 @@ NS_DRAGON
 
 class Module {
 protected:
-
+	const char *_name_;
+	short _v_major_;
+	short _v_minor_;
 	
 public:
-	Module()  {}
+	Module() : _name_("unnamed"), _v_major_(-1), _v_minor_(-1) {}
 	virtual ~Module();
 
 	virtual void Init();
@@ -27,7 +29,8 @@ protected:
 public:
 	JavaScriptModule(JavaScriptCompiler &jsCompiler) :
 			jsCompiler_(jsCompiler) {}
-	
+
+	virtual v8::Handle<v8::Object> Wrap()  { return v8::Handle<v8::Object>(); }
 };
 
 NS_END

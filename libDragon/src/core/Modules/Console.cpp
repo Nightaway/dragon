@@ -7,7 +7,9 @@ NS_USING_V8
 
 Console::Console(JavaScriptCompiler &jsCompiler) : JavaScriptModule(jsCompiler)
 {
-
+	_name_    = "console";
+	_v_major_ = 0;
+	_v_minor_ = 1;
 }
 
 Console::~Console()
@@ -18,6 +20,7 @@ Console::~Console()
 void Console::Init()
 {
 
+	jsCompiler_.AddModule(_name_, this);
 }
 			
 void Console::Dispose()

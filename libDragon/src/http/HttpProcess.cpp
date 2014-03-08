@@ -2,7 +2,7 @@
 
 #include "../core/QueryString.h"
 #include "../core/Controller.h"
-#include "../utility/Wrapper.h"
+#include "../wrapper/Wrapper.h"
 
 #include <boost/foreach.hpp>
 

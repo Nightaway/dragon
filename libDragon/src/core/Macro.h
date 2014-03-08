@@ -7,4 +7,6 @@
 #define NS_USING_V8     using namespace v8;
 #define NS_USING_BOOST  using namespace boost;
 
+#define UNREACHABLE() assert(0);
+
 #endif

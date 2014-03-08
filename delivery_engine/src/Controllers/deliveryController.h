@@ -7,7 +7,7 @@ class deliveryController :
 		public dragon::Controller
 {
 	DECLARE_CONTROLLER(deliveryController)
-	DECLARE_ACTIONT_MAP
+        DECLARE_ACTION_MAP()
 
 public:
 	void ad(dragon::QueryString &qs);

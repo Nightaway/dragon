@@ -8,7 +8,7 @@ BEGIN_ACTION_MAP(deliveryController)
 	ACTION(deliveryController, ad)
 	ACTION_OP1(deliveryController, lg, "__")
 	ACTION(deliveryController, ck)
-END_ACTION_MAP
+END_ACTION_MAP()
 
 void deliveryController::ad(QueryString &qs)
 {

@@ -1,7 +1,5 @@
 #include "UrlRouting.h"
 
-#include <iostream>
-
 NS_USING_DRAGON
 NS_USING_V8
 
@@ -22,8 +20,6 @@ void UrlRouting::Init()
 		if (!initFuncValue.IsEmpty() && initFuncValue->IsFunction()) {
 			Handle<Function> initFunc = Handle<Function>::Cast(initFuncValue);
 			Handle<Value> ret = initFunc->Call(ctx->Global(), 0, NULL);
-			//String::AsciiValue ascii(ret);
-			//std::cout << *ascii << std::endl;
 		}
 	}
 }
@@ -38,8 +34,6 @@ void UrlRouting::Dispose()
 		if (!initFuncValue.IsEmpty() && initFuncValue->IsFunction()) {
 			Handle<Function> initFunc = Handle<Function>::Cast(initFuncValue);
 			Handle<Value> ret = initFunc->Call(ctx->Global(), 0, NULL);
-			//String::AsciiValue ascii(ret);
-			//std::cout << *ascii << std::endl;
 		}
 	}
 }

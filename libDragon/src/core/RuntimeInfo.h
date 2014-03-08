@@ -30,7 +30,7 @@ public:                                              \
 	ClassTable *cls_name::GetClassTable_() {	          \
 		return &clsTable_;}
 
-#define DECLARE_ACTIONT_MAP \
+#define DECLARE_ACTION_MAP() \
 protected:		    \
 	static dragon::ActionTable actionTable[]; \
 public: \
@@ -46,7 +46,7 @@ public: \
 #define ACTION_OP1(cls_name, act_name, seperator) \
 	{#act_name, (Action)&cls_name::act_name, seperator},
 
-#define END_ACTION_MAP \
+#define END_ACTION_MAP() \
 	{NULL, NULL, NULL} };
 
 #define CLASS_FOREACH(tbl_name)        			        \
@@ -57,6 +57,9 @@ public: \
 #define ACTION_FOREACH(ctrl, tbl_name)                   \
 	ActionTable *tbl_name =  ctrl->GetActionTable(); \
 	for (; tbl_name->action != NULL; tbl_name++)	
+
+#define ADD_CONTROLLER(name) \
+	name::InitClass_();
 
 NS_DRAGON
 

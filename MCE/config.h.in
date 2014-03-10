@@ -1,0 +1,8 @@
+#ifndef __MCE_CONFIG_H__
+#define __MCE_CONFIG_H__
+
+#define MCE_APP_PATH "${CMAKE_INSTALL_PREFIX}/MCE"
+
+
+#endif
+

@@ -1,3 +1,4 @@
 [Maintenance]
-Deamon = 1
+Deamon    = 0
+Interval  = 5
 

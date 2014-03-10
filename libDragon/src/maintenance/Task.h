@@ -6,7 +6,9 @@
 NS_DRAGON
 
 struct Task {
-	virtual void run() = 0;
+	Task() {}
+	virtual ~Task() {}
+	virtual void Run() {}
 };
 
 NS_END

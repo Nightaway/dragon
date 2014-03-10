@@ -1,4 +1,4 @@
-#include "Processs.h"
+#include "Process.h"
 
 #include <unistd.h>
 #include <sys/types.h>
@@ -6,6 +6,11 @@
 #include <sys/time.h>
 #include <memory.h>
 #include <stdlib.h>
+#include <cassert>
+
+#include <boost/foreach.hpp>
+
+#include "Daemon.h"
 
 static void spawn_process();
 
@@ -13,7 +18,6 @@ sig_atomic_t sig_term  = 0;
 sig_atomic_t sig_alarm = 0;
 
 static void signal_handler(int signo)
-
 {
 	switch(signo)
 	{
@@ -27,7 +31,9 @@ static void signal_handler(int signo)
 	}
 }
 
-void master_process_cycle()
+NS_USING_DRAGON
+
+void Process::master_process_cycle()
 {
 	struct sigaction sa;
 	memset(&sa, 0, sizeof(struct sigaction));
@@ -49,15 +55,15 @@ void master_process_cycle()
 		perror("sigprocmask error!");
 		exit(1);
 	}
-	sigemptyset(&set);
+	sigemptyset(&set); 
 
-	/*if ((*c->config)["Maintenance"]["Deamon"] == "1") {
+	if (config_["Maintenance"]["Deamon"] == "1") {
 
 		if (becameDaemon() == -1) {
 			perror("bacameDaemon");
 			exit(1);
 		}
-	}*/
+	}
 
 	spawn_process();
 
@@ -66,13 +72,13 @@ void master_process_cycle()
 		sigsuspend(&set);
 		if (sig_term) 
 		{
-			//kill(c->pid[i], SIGTERM);
+			kill(worker_pid_, SIGTERM);
 			exit(0);
 		}
 	}
 }
 
-void worker_process_cycle()
+void Process::worker_process_cycle()
 {
 	sigset_t set;
 	struct sigaction sa;
@@ -88,7 +94,7 @@ void worker_process_cycle()
 	tv.it_value.tv_sec  = 5;
 	tv.it_value.tv_usec = 0;
 
-	tv.it_interval.tv_sec  = 5;//c->interval;
+	tv.it_interval.tv_sec  = atoi(config_["Maintenance"]["Interval"].c_str());
 	tv.it_interval.tv_usec = 0;
 
 	if (setitimer(ITIMER_REAL, &tv, NULL) == -1)
@@ -103,12 +109,16 @@ void worker_process_cycle()
 		if (sig_alarm) 
 		{
 			sig_alarm = 0;
-			//do_jobs(c);
+			BOOST_FOREACH(Task *t, tasks_)
+			{
+				assert(t);
+				t->Run();
+			}
 		}
 	}
 }
 
-void spawn_process()
+void Process::spawn_process()
 {
 	int pid;
 	switch (pid = fork())
@@ -122,8 +132,51 @@ void spawn_process()
 		break;
 
 		default :
-		//c->pid[c->idx++] = pid;
+		worker_pid_ = pid;
 		break;
 	}
 }
 
+Process::Process() : config_(jsc_)
+{
+
+}
+
+Process::~Process()
+{
+
+}
+
+void Process::Init()
+{
+	// #1
+	SetPath();
+
+	// #2
+	master_pid_ = getpid();
+
+	// #3
+	std::string configPath = path_;
+	configPath += "/conf/App.conf";
+	config_.Parse(configPath.c_str());
+}
+
+void Process::Dispose()
+{
+
+}
+
+void Process::Run()
+{
+	master_process_cycle();
+}
+
+void Process::SetPath()
+{
+	path_ = "";
+}
+
+void Process::PushTask(Task *t)
+{
+	tasks_.push_back(t);
+}

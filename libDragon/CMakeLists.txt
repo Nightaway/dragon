@@ -10,6 +10,10 @@ set(header_list
 set(core_header_list 
 	src/core/Macro.h
 	src/core/Module.h
+	src/core/Allocation.h
+	src/core/Space.h
+	src/core/Object.h
+	src/core/Table.h
 	src/core/Application.h
 	src/core/ApplicationCache.h
 	src/core/RuntimeInfo.h	
@@ -24,6 +28,10 @@ set(core_header_list
 
 set(core_src_list 
 	src/core/Module.cpp
+	src/core/Allocation.cpp
+	src/core/Space.cpp
+	src/core/Object.cpp
+	src/core/Table.cpp
 	src/core/Application.cpp
 	src/core/ApplicationCache.cpp
 	src/core/RuntimeInfo.cpp

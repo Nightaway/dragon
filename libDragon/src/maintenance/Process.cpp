@@ -112,7 +112,8 @@ void Process::worker_process_cycle()
 			BOOST_FOREACH(Task *t, tasks_)
 			{
 				assert(t);
-				t->Run();
+				Cycle c = {path_, master_pid_, worker_pid_, config_, logInfo_, logError_};
+				t->Run(c);
 			}
 		}
 	}
@@ -137,7 +138,9 @@ void Process::spawn_process()
 	}
 }
 
-Process::Process() : config_(jsc_)
+Process::Process() : config_(jsc_), 
+		     logInfo_(jsc_, kLogLevelInfo, "info"),
+		     logError_(jsc_, kLogLevelError, "error")
 {
 
 }
@@ -159,6 +162,13 @@ void Process::Init()
 	std::string configPath = path_;
 	configPath += "/conf/App.conf";
 	config_.Parse(configPath.c_str());
+
+	std::string logPath = path_;
+	logPath += "/logs/info.log";
+	logInfo_.Open(configPath.c_str());
+
+	logPath += "/logs/error.log";
+	logError_.Open(configPath.c_str());
 }
 
 void Process::Dispose()

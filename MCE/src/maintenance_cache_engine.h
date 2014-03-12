@@ -4,7 +4,6 @@
 #include "config.h"
 #include <dragon.h>
 
-
 class CacheProcess : public dragon::Process {
 
 public:
@@ -17,7 +16,7 @@ public:
 class CacheTask : public dragon::Task {
 
 public:
-	virtual void Run();
+	virtual void Run(dragon::Cycle &c);
 };
 
 #endif

@@ -3,12 +3,14 @@
 
 #include "../core/Macro.h"
 
+#include "Cycle.h"
+
 NS_DRAGON
 
 struct Task {
 	Task() {}
 	virtual ~Task() {}
-	virtual void Run() {}
+	virtual void Run(Cycle &c) {}
 };
 
 NS_END

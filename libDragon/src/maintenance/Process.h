@@ -4,6 +4,7 @@
 #include "../core/Macro.h"
 #include "../core/JSCompiler.h"
 #include "../core/Modules/Config.h"
+#include "../core/Modules/Log.h"
 #include "Task.h"
 
 #include <unistd.h>
@@ -19,6 +20,8 @@ NS_DRAGON
 		
 		JavaScriptCompiler jsc_;
 		Config config_;
+		Log    logInfo_;
+		Log    logError_;
 
 		void master_process_cycle();
 		void worker_process_cycle();

@@ -5,6 +5,7 @@
 #include "core/Controller.h"
 #include "core/QueryString.h"
 #include "maintenance/Process.h"
+#include "maintenance/Cycle.h"
 #include "maintenance/Task.h"
 
 #endif

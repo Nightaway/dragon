@@ -17,9 +17,9 @@ void CacheProcess::SetPath()
 
 #include <iostream>
 
-void CacheTask::Run()
+void CacheTask::Run(dragon::Cycle &c)
 {
-	std::cout << "Task Run!" << std::endl;
+	std::cout << "Task Run at " << c.path << std::endl;
 }
 
 int main() {

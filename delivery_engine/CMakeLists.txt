@@ -21,9 +21,18 @@ set(controller_src_list
 	src/Controllers/deliveryController.cpp
 )
 
+set(model_header_list
+	src/Models/AdInfo.h
+)
+
+set(model_src_list
+	src/Models/AdInfo.cpp
+)
+
 set(src_list
 	${controller_src_list}
 	${app_src_list}
+	${model_src_list}
 )
 
 configure_file (

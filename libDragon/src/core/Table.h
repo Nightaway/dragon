@@ -32,9 +32,9 @@ public:
 		table_[idx] = e;
 	}
 
-	T *Get(unsigned idx) {
+	Ref<T> Get(unsigned idx) {
 		assert(idx < capacity_);
-		return table_[idx];
+		return Ref<T>(table_[idx]);
 	}
 
 	unsigned Capacity() {
@@ -47,6 +47,11 @@ public:
 			space.Put(table_[i]);
 	}
 
+	virtual void Stuff(Space &space)
+	{
+		for (unsigned i=0; i<capacity_; ++i)
+			space.Get(table_[i]);
+	}
 private:
 	const unsigned capacity_;
 	T **table_;

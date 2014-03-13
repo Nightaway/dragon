@@ -10,18 +10,44 @@
 
 NS_DRAGON	
 
+	inline size_t sizeOf(const std::string &str)
+	{
+		size_t s = 0;
+		s += sizeof(size_t);
+		s += str.size();
+		return s;
+	}
+
 	template<typename T>
 	class Ref {
 	public:
-		Ref() : Addr_(NULL) {}
+		Ref() : addr_(NULL) {}
+		Ref(T *addr) : addr_(addr) {}
 		~Ref() {}
 
 		bool IsNull()
 		{
-			return Addr_?true:false;
+			return addr_?true:false;
 		}
+
+		T *operator*() const 
+		{
+			return addr_;
+		}
+
+		T *operator->() const 
+		{
+			return addr_;
+		}
+
+	
+		static Ref<T> New(Space &space)
+		{
+			return Ref<T>(reinterpret_cast<T *>(space.CurrentAddress()));
+		}
+
 	private:
-		T *Addr_;
+		T *addr_;
 	};
 
 	class Object {
@@ -29,12 +55,13 @@ NS_DRAGON
 		Object();
 		virtual ~Object();
 
-		unsigned Size()
+		virtual unsigned Size()
 		{
 			return size_;
 		}
 
 		virtual void Dump(Space &space) {}
+		virtual void Stuff(Space &space) {}
 
 	protected:
 		unsigned size_;

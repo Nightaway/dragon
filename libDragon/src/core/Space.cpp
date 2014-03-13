@@ -12,6 +12,8 @@
 #include <sys/mman.h>
 #include <errno.h>
 
+#include "Object.h"
+
 NS_USING_DRAGON
 
 Space::Space() : 
@@ -25,6 +27,12 @@ Space::Space() :
 Space::~Space()
 {
 
+}
+
+void *Space::Allocate(Object &obj)
+{
+	void *addr = reinterpret_cast<char *>(addr_) + obj.Size();
+	return addr;
 }
 
 SemiSpace::SemiSpace() 
@@ -78,6 +86,7 @@ void NamedSemiSpace::Create()
     }
 
     half_addr_ = reinterpret_cast<char *>(addr_) + (size_ / 2);
+    head_addr_ = addr_;
 }
 
 void NamedSemiSpace::Destroy()

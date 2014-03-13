@@ -8,8 +8,11 @@
 class AdInfo : public dragon::Object {
 public:
 
+	virtual unsigned Size();
 	virtual void Dump(dragon::Space &space);
+	virtual void Stuff(dragon::Space &space);
 
+	static dragon::Ref<AdInfo> New(dragon::Space &space);
 public:
 	int id;
 	std::string name;

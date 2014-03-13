@@ -8,16 +8,14 @@ NS_USING_DRAGON
 
 typedef Table<AdInfo> AdInfoTable;
 
-TEST(space, test1) {
-	NamedSemiSpace space("test", 1024 * 1024 * 4);
+TEST(space, obj_dump_test1) {
+	NamedSemiSpace space("test1", 1024 * 1024 * 4);
 	space.Create();
 
 	void *addr = space.Address();
 	void *half = space.HalfAddress();
-	printf("%X, %X\n", addr, half);
-
-	AdInfoTable adInfoTbl(100);
-	adInfoTbl.Dump(space);
+	void *head = space.HeadAddress();
+	printf("addr:%X, half:%X, head:%X\n", addr, half, head);
 
 	AdInfo ad1;
 	ad1.id = 1;
@@ -25,10 +23,50 @@ TEST(space, test1) {
 	ad1.width = 200;
 	ad1.height = 300;
 	ad1.Dump(space);
-	adInfoTbl.Put(ad1.id, &ad1);
+	
+	space.SetPos(0);
+	AdInfo ad2;
+	ad2.Stuff(space);
+	ASSERT_EQ(1, ad2.id);
+	ASSERT_STREQ("Motu", ad2.name.c_str());
+	ASSERT_EQ(200, ad2.width);
+	ASSERT_EQ(300, ad2.height);
 
-	AdInfo *ad2 = adInfoTbl.Get(1);
-	printf("id:%d\n", ad2->id);
+	space.Switch();
+
+	addr = space.Address();
+	half = space.HalfAddress();
+	head = space.HeadAddress();
+	printf("addr:%X, half:%X, head:%X\n", addr, half, head);
+
+	AdInfo ad3;
+	ad3.id = 3;
+	ad3.name = "ajs";
+	ad3.width = 400;
+	ad3.height = 400;
+	ad3.Dump(space);
+
+	AdInfo ad4;
+	space.SetPos(0);
+	ad4.Stuff(space);
+	ASSERT_EQ(3, ad4.id);
+	ASSERT_STREQ("ajs", ad4.name.c_str());
+	ASSERT_EQ(400, ad4.width);
+	ASSERT_EQ(400, ad4.height);
 	
 	space.Destroy();
 }
+
+TEST(space, obj_ref_test1) {
+	NamedSemiSpace space("test2", 1024 * 1024 * 4);
+	space.Create();
+
+	Ref<AdInfo> ad1 = Ref<AdInfo>::New(space);
+	ad1->id = 1;
+	ad1->name = std::string("11");
+	printf("id:%d, name:%s\n", ad1->id, ad1->name.c_str());
+
+	space.Destroy();
+}
+
+

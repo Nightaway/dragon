@@ -2,7 +2,7 @@
 
 NS_USING_DRAGON
 
-Object::Object()
+Object::Object() : size_(0)
 {
 
 }

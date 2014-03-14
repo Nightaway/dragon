@@ -14,6 +14,7 @@ set(core_header_list
 	src/core/Space.h
 	src/core/Object.h
 	src/core/Table.h
+	src/core/String.h
 	src/core/Application.h
 	src/core/ApplicationCache.h
 	src/core/RuntimeInfo.h	
@@ -32,6 +33,7 @@ set(core_src_list
 	src/core/Space.cpp
 	src/core/Object.cpp
 	src/core/Table.cpp
+	src/core/String.cpp
 	src/core/Application.cpp
 	src/core/ApplicationCache.cpp
 	src/core/RuntimeInfo.cpp

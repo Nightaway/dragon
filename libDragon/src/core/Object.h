@@ -3,6 +3,7 @@
 
 #include "Macro.h"
 #include "Space.h"
+#include "StringRef.h"
 
 #ifndef NULL
 #define NULL 0
@@ -15,6 +16,14 @@ NS_DRAGON
 		size_t s = 0;
 		s += sizeof(size_t);
 		s += str.size();
+		return s;
+	}
+
+	inline unsigned sizeOf(const StringRef str)
+	{
+		unsigned s = 0;
+		s += sizeof(unsigned);
+		s += str.length();
 		return s;
 	}
 
@@ -40,10 +49,14 @@ NS_DRAGON
 			return addr_;
 		}
 
-	
+		static Ref<T> Cast(void *addr)
+		{
+			return Ref<T>(reinterpret_cast<T *>(addr));
+		} 
+
 		static Ref<T> New(Space &space)
 		{
-			return Ref<T>(reinterpret_cast<T *>(space.CurrentAddress()));
+			return Ref<T>(reinterpret_cast<T *>(space.Allocate(sizeof(T))));
 		}
 
 	private:

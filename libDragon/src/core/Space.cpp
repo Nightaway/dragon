@@ -29,9 +29,10 @@ Space::~Space()
 
 }
 
-void *Space::Allocate(Object &obj)
+void *Space::Allocate(unsigned size)
 {
-	void *addr = reinterpret_cast<char *>(addr_) + obj.Size();
+	void *addr = reinterpret_cast<char *>(addr_) + size;
+	pos_ += size;
 	return addr;
 }
 

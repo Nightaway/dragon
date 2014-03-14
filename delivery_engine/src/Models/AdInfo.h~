@@ -3,11 +3,12 @@
 
 #include <core/Space.h>
 #include <core/Object.h>
+#include <core/StringRef.h>
+#include <core/String.h>
 #include <string>
 
 class AdInfo : public dragon::Object {
 public:
-
 	virtual unsigned Size();
 	virtual void Dump(dragon::Space &space);
 	virtual void Stuff(dragon::Space &space);
@@ -15,7 +16,8 @@ public:
 	static dragon::Ref<AdInfo> New(dragon::Space &space);
 public:
 	int id;
-	std::string name;
+	dragon::StringRef name;
+	dragon::Ref<dragon::String> text;
 	unsigned width;
 	unsigned height;
 };

@@ -32,7 +32,7 @@ public:
 		return size_;
 	}
 
-	void *Allocate(Object &obj);
+	void *Allocate(unsigned size);
 
 	template <typename T>
 	void Put(const T e)

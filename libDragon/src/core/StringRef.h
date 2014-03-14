@@ -21,7 +21,7 @@ class StringRef {
 		return str_;
 	}
 
-	unsigned length()
+	unsigned length() const 
 	{
 		return len_;
 	}	

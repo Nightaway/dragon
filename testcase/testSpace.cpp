@@ -2,12 +2,17 @@
 #include <core/Space.h>
 #include <core/Table.h>
 #include <core/String.h>
+#include <core/Heap.h>
 #include <Models/AdInfo.h>
 #include <cstdio>
 
 NS_USING_DRAGON
 
 typedef Table<AdInfo> AdInfoTable;
+
+TEST(space, object_test1) {
+	printf("Object:%d, String:%d\n", sizeof(Object), sizeof(String));
+}
 
 TEST(space, obj_dump_test1) {
 	NamedSemiSpace space("test1", 1024 * 1024 * 4);
@@ -58,9 +63,25 @@ TEST(space, obj_dump_test1) {
 	space.Destroy();
 }
 
+TEST(space, table_test1) {
+	NamedSemiSpace space("test3", 1024 * 4);
+	space.Create();
+
+	OffsetTable table(100, space);
+	printf("offset:%d\n",space.GetPos());
+	AdInfo ad;
+	ad.id = 1;
+	ad.name = StringRef("rpl", strlen("rpl"));
+	ad.Dump(space);
+	printf("offset:%d\n",space.GetPos());
+
+	space.Close();
+}
+
 TEST(space, obj_ref_test1) {
-	NamedSemiSpace sspace("StringTable", 1024);
-	sspace.Create();
+	/*StringHeap heap("StringHeap", 4096);
+	heap.Create();
+	heap.Clear();
 
 	NamedSemiSpace space("test2", 1024 * 1024 * 4);
 	space.Create();
@@ -68,11 +89,23 @@ TEST(space, obj_ref_test1) {
 	Ref<AdInfo> ad1 = Ref<AdInfo>::New(space);
 	ad1->id = 1;		
 	ad1->name = StringRef("22", strlen("22"));
-	ad1->text = String::New("11", strlen("11"), sspace);
-	printf("id:%d, name:%s, text:%s\n", ad1->id, ad1->name.string(), ad1->text->GetString());
+	printf("Heap pos:%d\n", heap.GetPos());
+	ad1->text = heap.Allocate("11", strlen("11"));
+	//heap.AddRoot(&(ad1->text));
 
-	sspace.Destroy();
-	space.Destroy();
+	printf("Heap pos:%d\n", heap.GetPos());
+	heap.Allocate("121", strlen("121"));
+	printf("Heap pos:%d\n", heap.GetPos());
+	printf("id:%d, name:%s, text:%s\n", ad1->id, ad1->name.string(), ad1->text->GetString());
+	heap.Close();
+	space.Destroy();*/
+}
+
+TEST(space, open_test1) {
+	StringHeap heap("StringHeap", 4096);
+	heap.Open();
+	heap.PrintObjs();
+	heap.Close();
 }
 
 

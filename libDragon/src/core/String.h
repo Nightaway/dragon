@@ -5,6 +5,8 @@
 #include "Object.h"
 #include "Space.h"
 
+#include <stdio.h>
+
 NS_DRAGON
 
 class String : public Object {
@@ -14,17 +16,15 @@ public:
 
 	static Ref<String> New(const char *str, unsigned len, Space &space)
 	{
-		char *addr = reinterpret_cast<char *>(space.Allocate(len));
-		strncpy(addr, str, len);
+		char *addr = reinterpret_cast<char *>(space.Allocate(sizeof(String)));
 		Ref<String> ret = Ref<String>::Cast(addr);
-		ret->SetString(addr);
-		ret->SetLength(len);
-		return Ref<String>::Cast(addr);
-	}
+		memset(addr, 0, sizeof(unsigned));
+		//memset(addr, 0, sizeof(unsigned));
+		//memset(addr, 0, sizeof(char *));
 
-	void SetString(char *string)
-	{
-		string_ = string;
+		printf("size:%d\n", ret->Size());
+		
+		return ret;	
 	}
 
 	char *GetString()
@@ -36,17 +36,23 @@ public:
 	{
 		length_ = len;
 	}
-	
+
 	unsigned GetLength()
 	{
 		return length_;
 	}
 
-	virtual unsigned Size();
+	String &operator=(const String &that)
+	{
+		this->string_ = that.string_;
+		this->length_ = that.length_;
+	}
+
+	unsigned Size();
 
 private:
-	char *string_;
 	unsigned length_;
+	char *string_;
 };
 
 

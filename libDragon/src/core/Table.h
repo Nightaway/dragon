@@ -18,7 +18,7 @@ public:
 	}
 
 	Table(unsigned cap) : capacity_(cap) { 
-		size_ = capacity_ * sizeof(T *);
+		size_ = capacity_ * sizeof(T **);
 		table_ = static_cast<T **>(Malloced::New(size_));
 		memset(table_, 0, size_);
 	}
@@ -41,20 +41,31 @@ public:
 		return capacity_;
 	}
 	
-	virtual void Dump(Space &space)
+	void Dump(Space &space)
 	{
 		for (unsigned i=0; i<capacity_; ++i)
 			space.Put(table_[i]);
 	}
 
-	virtual void Stuff(Space &space)
+	void Stuff(Space &space)
 	{
 		for (unsigned i=0; i<capacity_; ++i)
 			space.Get(table_[i]);
 	}
 private:
-	const unsigned capacity_;
+	unsigned capacity_;
 	T **table_;
+};
+
+class OffsetTable {
+public:
+	OffsetTable();
+	~OffsetTable();
+	OffsetTable(unsigned capacity, Space &space);
+
+private:
+	unsigned capacity_;
+	unsigned *offset_;
 };
 
 NS_END

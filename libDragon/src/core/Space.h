@@ -25,7 +25,7 @@ public:
 	void *CurrentAddress()
 	{
 		return reinterpret_cast<char *>(addr_) + pos_;
-	} 
+	}
 
 	unsigned Capacity()
 	{
@@ -84,6 +84,12 @@ public:
 	{
 		return pos_;
 	}
+
+	unsigned Used()
+	{
+		return size_ - pos_;
+	}
+
 protected:
 	void *addr_;
 	unsigned size_;
@@ -136,6 +142,9 @@ public:
 	}
 
 	void Create();
+	void Clear();
+	void Open();
+	void Close();
 	void Destroy();
 
 protected:

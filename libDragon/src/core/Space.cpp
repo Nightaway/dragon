@@ -31,7 +31,7 @@ Space::~Space()
 
 void *Space::Allocate(unsigned size)
 {
-	void *addr = reinterpret_cast<char *>(addr_) + size;
+	void *addr = reinterpret_cast<char *>(addr_) + pos_;
 	pos_ += size;
 	return addr;
 }
@@ -90,9 +90,46 @@ void NamedSemiSpace::Create()
     head_addr_ = addr_;
 }
 
+void NamedSemiSpace::Open()
+{
+	fd_ = shm_open(name_, O_CREAT|O_RDWR, 0);
+	char buff[255];
+	if (fd_ == -1) {
+		sprintf(buff, "shm_open error : %s \n", strerror(errno));
+		throw std::runtime_error(std::string(buff, strlen(buff)));
+	}
+
+	if (ftruncate(fd_, size_) == -1) {
+		sprintf(buff, "ftruncate error : %s \n", strerror(errno));
+		throw std::runtime_error(std::string(buff, strlen(buff)));
+	}
+
+	addr_ = mmap(NULL, size_, PROT_READ | PROT_WRITE, MAP_SHARED, fd_, 0);
+	if (addr_ == MAP_FAILED) {
+		sprintf(buff, "mmap : %s \n", strerror(errno));
+		throw std::runtime_error(std::string(buff, strlen(buff)));
+	}
+
+	if (close(fd_) == -1) {
+		sprintf(buff, "close shmzone fd : %s \n", strerror(errno));
+		throw std::runtime_error(std::string(buff, strlen(buff)));
+	}
+        half_addr_ = reinterpret_cast<char *>(addr_) + (size_ / 2);
+        head_addr_ = addr_;
+}
+
+void NamedSemiSpace::Clear()
+{
+	memset(addr_, 0, size_);
+}
+
+void NamedSemiSpace::Close()
+{
+	munmap(addr_, size_);
+}
+
 void NamedSemiSpace::Destroy()
 {
 	munmap(addr_, size_);
 	shm_unlink(name_);
 }
-

@@ -36,7 +36,7 @@ NS_DRAGON
 
 		bool IsNull()
 		{
-			return addr_?true:false;
+			return (addr_ == NULL)?true:false;
 		}
 
 		T *operator*() const 
@@ -66,15 +66,12 @@ NS_DRAGON
 	class Object {
 	public:
 		Object();
-		virtual ~Object();
+		~Object();
 
-		virtual unsigned Size()
+		unsigned Size()
 		{
 			return size_;
 		}
-
-		virtual void Dump(Space &space) {}
-		virtual void Stuff(Space &space) {}
 
 	protected:
 		unsigned size_;

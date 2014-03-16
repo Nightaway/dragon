@@ -13,6 +13,7 @@ set(core_header_list
 	src/core/Allocation.h
 	src/core/Space.h
 	src/core/Object.h
+	src/core/Heap.h
 	src/core/Table.h
 	src/core/String.h
 	src/core/Application.h
@@ -32,6 +33,7 @@ set(core_src_list
 	src/core/Allocation.cpp
 	src/core/Space.cpp
 	src/core/Object.cpp
+	src/core/Heap.cpp
 	src/core/Table.cpp
 	src/core/String.cpp
 	src/core/Application.cpp

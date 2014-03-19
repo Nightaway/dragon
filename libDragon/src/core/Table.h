@@ -63,9 +63,45 @@ public:
 	~OffsetTable();
 	OffsetTable(unsigned capacity, Space &space);
 
+	void Open(Space &space);
+
+	void Put(unsigned id, unsigned offset)
+	{
+		assert(table_);	
+		table_[id] = offset;
+	}
+
+	unsigned Get(unsigned id)
+	{
+		assert(table_);
+		return table_[id];
+	}
+
+	void Dump(Space &space)	
+	{
+		for (unsigned i=0; i<capacity_; ++i)
+			space.Put(table_[i]);
+	}
+
+	void Stuff(Space &space)
+	{
+		for (unsigned i=0; i<capacity_; ++i)
+			space.Get(table_[i]);
+	}
+
+	unsigned GetCapacity()
+	{
+		return capacity_;
+	}
+
+	unsigned *GetTable()
+	{
+		return table_;
+	}
+
 private:
 	unsigned capacity_;
-	unsigned *offset_;
+	unsigned *table_;
 };
 
 NS_END

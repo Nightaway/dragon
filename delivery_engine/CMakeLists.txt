@@ -23,10 +23,12 @@ set(controller_src_list
 
 set(model_header_list
 	src/Models/AdInfo.h
+	src/Models/ZoneInfo.h
 )
 
 set(model_src_list
 	src/Models/AdInfo.cpp
+	src/Models/ZoneInfo.cpp
 )
 
 set(src_list

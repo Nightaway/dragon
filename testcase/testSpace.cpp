@@ -25,7 +25,7 @@ TEST(space, obj_dump_test1) {
 
 	AdInfo ad1;
 	ad1.id = 1;
-	ad1.name = StringRef("Motu", strlen("Motu"));
+	ad1.name = std::string("Motu");
 	ad1.width = 200;
 	ad1.height = 300;
 	ad1.Dump(space);
@@ -34,7 +34,7 @@ TEST(space, obj_dump_test1) {
 	AdInfo ad2;
 	ad2.Stuff(space);
 	ASSERT_EQ(1, ad2.id);
-	ASSERT_STREQ("Motu", ad2.name.string());
+	ASSERT_STREQ("Motu", ad2.name.c_str());
 	ASSERT_EQ(200, ad2.width);
 	ASSERT_EQ(300, ad2.height);
 
@@ -47,7 +47,7 @@ TEST(space, obj_dump_test1) {
 
 	AdInfo ad3;
 	ad3.id = 3;
-	ad3.name = StringRef("ajs", strlen("ajs"));
+	ad3.name = std::string("ajs");
 	ad3.width = 400;
 	ad3.height = 400;
 	ad3.Dump(space);
@@ -56,7 +56,7 @@ TEST(space, obj_dump_test1) {
 	space.SetPos(0);
 	ad4.Stuff(space);
 	ASSERT_EQ(3, ad4.id);
-	ASSERT_STREQ("ajs", ad4.name.string());
+	ASSERT_STREQ("ajs", ad4.name.c_str());
 	ASSERT_EQ(400, ad4.width);
 	ASSERT_EQ(400, ad4.height);
 	
@@ -68,11 +68,18 @@ TEST(space, table_test1) {
 	space.Create();
 
 	OffsetTable table(100, space);
+	printf("offset:%d, cap:%d\n",space.GetPos(), table.GetCapacity());
+	AdInfo ad1;
+	ad1.id = 1;
+	ad1.name = std::string("rpl");
+	ad1.Dump(space);
+	table.Put(ad1.id, space.GetPos());
 	printf("offset:%d\n",space.GetPos());
-	AdInfo ad;
-	ad.id = 1;
-	ad.name = StringRef("rpl", strlen("rpl"));
-	ad.Dump(space);
+	AdInfo ad2;
+	ad2.id = 1;
+	ad2.name = std::string("mmts");
+	ad2.Dump(space);
+	table.Put(ad2.id, space.GetPos());
 	printf("offset:%d\n",space.GetPos());
 
 	space.Close();
@@ -102,10 +109,10 @@ TEST(space, obj_ref_test1) {
 }
 
 TEST(space, open_test1) {
-	StringHeap heap("StringHeap", 4096);
+	/*StringHeap heap("StringHeap", 4096);
 	heap.Open();
 	heap.PrintObjs();
-	heap.Close();
+	heap.Close();*/
 }
 
 

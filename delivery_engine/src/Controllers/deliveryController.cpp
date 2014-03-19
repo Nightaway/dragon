@@ -1,5 +1,7 @@
 #include "deliveryController.h"
 
+#include "../Models/AdInfo.h"
+
 NS_USING_DRAGON
 
 IMPLEMENT_CONTROLLER(Controller, deliveryController)
@@ -12,9 +14,23 @@ END_ACTION_MAP()
 
 void deliveryController::ad(QueryString &qs)
 {
+	NamedSemiSpace space("DE_CACHE_DATA", 1024);
+	space.Open();
+	OffsetTable table;
+	table.Open(space);
+	unsigned offset = table.Get(1);
+	printf("offset:%d\n", offset);
+
+	space.SetPos(offset);
+	AdInfo ad;
+	ad.Stuff(space);
+	printf("ad id:%d, str:%s\n", ad.id, ad.name.c_str());
+
 	std::string out = "ad action : index=";
 	out += qs["index"];
 	response->StringResult(out);
+
+	space.Close();
 }
 
 void deliveryController::lg(QueryString &qs)

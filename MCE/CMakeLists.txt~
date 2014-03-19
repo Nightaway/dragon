@@ -8,6 +8,7 @@ include_directories(../v8/include)
 
 set (src_list
 	src/maintenance_cache_engine.cpp
+	src/mysql_context.cpp
 )
 
 configure_file (

@@ -9,15 +9,12 @@
 
 class AdInfo : public dragon::Object {
 public:
-	virtual unsigned Size();
-	virtual void Dump(dragon::Space &space);
-	virtual void Stuff(dragon::Space &space);
-
-	static dragon::Ref<AdInfo> New(dragon::Space &space);
+	unsigned Size();
+	void Dump(dragon::Space &space);
+	void Stuff(dragon::Space &space);
 public:
 	int id;
-	dragon::StringRef name;
-	dragon::Ref<dragon::String> text;
+	std::string name;
 	unsigned width;
 	unsigned height;
 };

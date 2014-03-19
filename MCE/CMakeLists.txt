@@ -8,6 +8,7 @@ include_directories(../v8/include)
 
 set (src_list
 	src/maintenance_cache_engine.cpp
+	src/mysql_context.cpp
 )
 
 configure_file (
@@ -16,7 +17,7 @@ configure_file (
 )
 
 add_executable(MCE ${src_list})
-target_link_libraries(MCE Dragon DE rt pthread boost_system boost_filesystem boost_thread boost_date_time v8_base.x64.a v8_nosnapshot.x64.a)
+target_link_libraries(MCE Dragon DE rt pthread mysqlcppconn boost_system boost_filesystem boost_thread boost_date_time v8_base.x64.a v8_nosnapshot.x64.a)
 install(TARGETS MCE DESTINATION MCE/sbin)
 install(DIRECTORY logs DESTINATION MCE)
 install(DIRECTORY scripts DESTINATION MCE)

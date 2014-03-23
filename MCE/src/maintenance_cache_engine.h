@@ -4,19 +4,13 @@
 #include "config.h"
 #include <dragon.h>
 
-class CacheProcess : public dragon::Process {
+class MCEProcess : public dragon::Process {
 
 public:
-	CacheProcess();
-	~CacheProcess();
+	MCEProcess();
+	~MCEProcess();
 
 	virtual void SetPath();
-};
-
-class CacheTask : public dragon::Task {
-
-public:
-	virtual void Run(dragon::Cycle &c);
 };
 
 #endif

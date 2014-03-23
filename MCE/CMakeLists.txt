@@ -6,9 +6,18 @@ include_directories(../libDragon/src)
 include_directories(../delivery_engine/src)
 include_directories(../v8/include)
 
+set (src_header
+	src/config.h
+	src/sql.h.inc
+	src/maintenance_cache_engine.h
+	src/mysql_context.h
+	src/cache_task.h
+)
+
 set (src_list
 	src/maintenance_cache_engine.cpp
 	src/mysql_context.cpp
+	src/cache_task.cpp
 )
 
 configure_file (
@@ -22,3 +31,4 @@ install(TARGETS MCE DESTINATION MCE/sbin)
 install(DIRECTORY logs DESTINATION MCE)
 install(DIRECTORY scripts DESTINATION MCE)
 install(FILES App.conf    DESTINATION MCE/conf)
+install(FILES ${src_header}  DESTINATION include/MCE/)

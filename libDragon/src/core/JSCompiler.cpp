@@ -7,7 +7,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 
-#include "Modules/Console.h"
+#include "modules/Console.h"
 
 NS_USING_DRAGON
 NS_USING_V8

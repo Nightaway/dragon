@@ -3,8 +3,8 @@
 
 #include <unistd.h>
 #include "../core/Macro.h"
-#include "../core/Modules/Config.h"
-#include "../core/Modules/Log.h"
+#include "../core/modules/Config.h"
+#include "../core/modules/Log.h"
 
 NS_DRAGON
 

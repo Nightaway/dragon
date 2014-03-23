@@ -3,12 +3,15 @@ project(libDragon)
 include_directories(../v8/include)
 
 set(header_list 
+	src/version.h
 	src/dragon.h
 	src/config.h
 )
 
 set(core_header_list 
 	src/core/Macro.h
+	src/core/StdType.h
+	src/core/StdInt.h
 	src/core/Module.h
 	src/core/Allocation.h
 	src/core/Space.h
@@ -23,9 +26,12 @@ set(core_header_list
 	src/core/StringRef.h
 	src/core/QueryString.h
 	src/core/JSCompiler.h
-	src/core/Modules/Config.h
-	src/core/Modules/Log.h
-	src/core/Modules/Console.h
+)
+
+set(core_module_header_list 
+	src/core/modules/Config.h
+	src/core/modules/Log.h
+	src/core/modules/Console.h
 )
 
 set(core_src_list 
@@ -43,9 +49,12 @@ set(core_src_list
 	src/core/StringRef.cpp
 	src/core/QueryString.cpp
 	src/core/JSCompiler.cpp
-	src/core/Modules/Config.cpp
-	src/core/Modules/Log.cpp
-	src/core/Modules/Console.cpp
+)
+
+set(core_module_src_list 
+	src/core/modules/Config.cpp
+	src/core/modules/Log.cpp
+	src/core/modules/Console.cpp
 )
 
 set(http_header_list
@@ -75,15 +84,19 @@ set(wrapper_src_list
 set(maintenance_header_list 
 	src/maintenance/Task.h
 	src/maintenance/Process.h
+	src/maintenance/Cycle.h
+	src/maintenance/Daemon.h
 )
 
 set(maintenance_src_list 
 	src/maintenance/Task.cpp
 	src/maintenance/Process.cpp
+	src/maintenance/Cycle.cpp
 )
 
 set(src_list
 	${core_src_list}
+	${core_module_src_list}
 	${http_src_list}
 	${wrapper_src_list}
 	${maintenance_src_list}
@@ -93,6 +106,7 @@ add_library(Dragon SHARED ${src_list})
 install(TARGETS Dragon DESTINATION lib)
 install(FILES ${header_list}    DESTINATION include/dragon/)
 install(FILES ${core_header_list}    DESTINATION include/dragon/core)
+install(FILES ${core_module_header_list}    DESTINATION include/dragon/core/modules)
 install(FILES ${http_header_list}    DESTINATION include/dragon/http)
 install(FILES ${wrapper_header_list} DESTINATION include/dragon/wrapper)
 install(FILES ${maintenance_header_list} DESTINATION include/dragon/maintenance)

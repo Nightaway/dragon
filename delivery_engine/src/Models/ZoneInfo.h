@@ -1,17 +1,17 @@
 #ifndef __ZONEINFO_H__
 #define __ZONEINFO_H__
 
+#include <string>
 #include <core/Space.h>
 #include <core/Object.h>
-#include <core/StringRef.h>
-#include <core/String.h>
-#include <string>
+#include <cppconn/resultset.h>
 
 class ZoneInfo : public dragon::Object {
 public:
 	unsigned Size();
 	void Dump(dragon::Space &space);
 	void Stuff(dragon::Space &space);
+	void Stuff(sql::ResultSet *rs);
 
 public:
 		int	    id;

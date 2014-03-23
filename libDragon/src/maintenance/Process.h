@@ -3,8 +3,8 @@
 
 #include "../core/Macro.h"
 #include "../core/JSCompiler.h"
-#include "../core/Modules/Config.h"
-#include "../core/Modules/Log.h"
+#include "../core/modules/Config.h"
+#include "../core/modules/Log.h"
 #include "Task.h"
 
 #include <unistd.h>

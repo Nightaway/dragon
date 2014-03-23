@@ -88,3 +88,34 @@ unsigned ZoneInfo::Size()
 	size_ += sizeOf(ad_render_value_false);
 	return size_;
 }
+
+void ZoneInfo::Stuff(sql::ResultSet *rs)
+{
+	if (rs->next()) {
+		id   = rs->getInt("id");
+		name = rs->getString("name");
+		type = rs->getInt("type");
+		description = rs->getString("description");
+		width = rs->getInt("width");
+		height = rs->getInt("height");
+		chain = rs->getString("chain");
+		prepend = rs->getString("prepend");
+		append  = rs->getString("append");
+		appendtype = rs->getInt("appendtype");
+		forceappend = rs->getString("forceappend");
+		inventory_forecast_type = rs->getInt("inventory_forecast_type");
+		block_zone = rs->getInt("block_zone");
+		cap_zone   = rs->getInt("cap_zone");
+		session_cap_zone = rs->getInt("session_cap_zone");
+		show_capped_no_cookie_zone = rs->getInt("show_capped_no_cookie_zone");
+		ext_adselection = rs->getString("ext_adselection");
+		publisher_id = rs->getInt("publisher_id");
+		agency_id = rs->getInt("agency_id");
+		trafficker_account_id = rs->getInt("trafficker_account_id");
+		manager_account_id = rs->getInt("manager_account_id");
+		ad_render = rs->getString("ad_render");
+		ad_render_name = rs->getString("ad_render_name");
+		ad_render_value_true = rs->getString("ad_render_value_true");
+		ad_render_value_false = rs->getString("ad_render_value_false");
+	}
+}

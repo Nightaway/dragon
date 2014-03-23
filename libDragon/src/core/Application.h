@@ -6,9 +6,9 @@
 #include "Macro.h"
 #include "Module.h"
 
-#include "Modules/Log.h"
-#include "Modules/Console.h"
-#include "Modules/Config.h"
+#include "modules/Log.h"
+#include "modules/Console.h"
+#include "modules/Config.h"
 
 #include "../http/HttpRequest.h"
 #include "../http/HttpResponse.h"

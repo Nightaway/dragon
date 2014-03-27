@@ -5,7 +5,7 @@
 using namespace dragon;
 
 int main(int argc, char *argv[]) {	
-        const char *url   = "/delivery/ad?index=5";
+        const char *url   = "/delivery/ad?zoneid=5";
 	const char *ip    = "127.0.0.1";
 	const char *host  = "localhost";
 	const char *userAgent  = "fx";

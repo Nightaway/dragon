@@ -1,5 +1,7 @@
 #include "ZoneInfo.h"
 
+#include <boost/foreach.hpp>
+
 NS_USING_DRAGON
 
 void ZoneInfo::Dump(Space &space)
@@ -28,6 +30,12 @@ void ZoneInfo::Dump(Space &space)
 	space.Put(ad_render_name);
 	space.Put(ad_render_value_true);
 	space.Put(ad_render_value_false);
+
+        space.Put(linked_banners.size());
+        BOOST_FOREACH(int bannerid, linked_banners)
+        {
+          space.Put(bannerid);
+        }
 }
 
 void ZoneInfo::Stuff(Space &space)
@@ -56,6 +64,15 @@ void ZoneInfo::Stuff(Space &space)
 	space.Get(ad_render_name);
 	space.Get(ad_render_value_true);
 	space.Get(ad_render_value_false);
+
+        size_t size = 0;
+        space.Get(size);
+        for (size_t i=0; i<size; ++i)
+        {
+          int bannerid;
+          space.Get(bannerid);
+          linked_banners.push_back(bannerid);
+        }
 }
 
 unsigned ZoneInfo::Size()

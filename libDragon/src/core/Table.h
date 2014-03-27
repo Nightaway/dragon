@@ -60,10 +60,10 @@ private:
 class OffsetTable {
 public:
 	OffsetTable();
-	~OffsetTable();
 	OffsetTable(unsigned capacity, Space &space);
+	~OffsetTable();
 
-	void Open(Space &space);
+	void Open(unsigned capacity, Space &space);
 
 	void Put(unsigned id, unsigned offset)
 	{
@@ -94,10 +94,23 @@ public:
 		return capacity_;
 	}
 
+        void SetCapacity(unsigned capacity)
+        {
+          capacity_ = capacity;
+        }
+
 	unsigned *GetTable()
 	{
 		return table_;
 	}
+
+        unsigned Size()
+        {
+          unsigned size = 0;
+          size += sizeof(capacity_);
+          size += capacity_ * sizeof(unsigned *);
+          return size;
+        }
 
 private:
 	unsigned capacity_;

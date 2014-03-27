@@ -15,12 +15,13 @@ OffsetTable::~OffsetTable()
 
 OffsetTable::OffsetTable(unsigned capacity, Space &space) : capacity_(capacity)
 {
-	unsigned bytes = capacity * sizeof(unsigned *); 
-	table_ = reinterpret_cast<unsigned *>(space.Allocate(bytes));
-	memset(table_, 0, bytes);
+  unsigned bytes = capacity * sizeof(unsigned *); 
+  table_ = reinterpret_cast<unsigned *>(space.Allocate(bytes));
+  memset(table_, 0, bytes);
 }
 
-void OffsetTable::Open(Space &space)
+void OffsetTable::Open(unsigned capacity, Space &space)
 {
-	table_ = reinterpret_cast<unsigned *>(space.Address());
+  this->SetCapacity(capacity);
+  table_ = reinterpret_cast<unsigned *>(space.Allocate(capacity * sizeof(unsigned *)));
 }

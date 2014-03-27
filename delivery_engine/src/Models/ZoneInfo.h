@@ -2,6 +2,7 @@
 #define __ZONEINFO_H__
 
 #include <string>
+#include <vector>
 #include <core/Space.h>
 #include <core/Object.h>
 #include <cppconn/resultset.h>
@@ -39,6 +40,8 @@ public:
 		std::string ad_render_name;
 		std::string ad_render_value_true;
 		std::string ad_render_value_false;
+
+                std::vector<int> linked_banners;
 };
 
 #endif

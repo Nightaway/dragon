@@ -1,0 +1,17 @@
+#include "DataModel.h"
+
+NS_USING_DRAGON
+
+ZoneInfo *GetZoneInfoById(int id, NamedSemiSpace &space)
+{
+  space.SetPos(0);
+  OffsetTable table;
+  table.Open(1000, space);
+  unsigned offset = table.Get(id);
+  if (offset == 0)
+    return NULL;
+  space.SetPos(offset);
+  ZoneInfo *zoneInfo = new ZoneInfo();
+  zoneInfo->stuff(space);
+  return zoneInfo;
+}

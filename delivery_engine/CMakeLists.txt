@@ -31,10 +31,19 @@ set(model_src_list
 	src/Models/ZoneInfo.cpp
 )
 
+set(util_header_list
+	src/Utility/DataModel.h
+)
+
+set(util_src_list
+	src/Utility/DataModel.cpp
+)
+
 set(src_list
 	${controller_src_list}
 	${app_src_list}
 	${model_src_list}
+	${util_src_list}
 )
 
 configure_file (

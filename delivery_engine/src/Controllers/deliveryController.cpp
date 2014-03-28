@@ -3,8 +3,7 @@
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include "../Models/AdInfo.h"
-#include "../Models/ZoneInfo.h"
+#include "../Utility/DataModel.h"
 
 NS_USING_DRAGON
 NS_USING_BOOST
@@ -31,30 +30,22 @@ void deliveryController::ad(QueryString &qs)
   NamedSemiSpace space("DE_CACHE_DATA", 1024 * 1024);
   space.Open();
 
-  OffsetTable zoneTable;
-  OffsetTable adTable;
-  zoneTable.Open(1000, space);
-  adTable.Open(1000, space);
-
-  unsigned offset = zoneTable.Get(601);
-  printf("offset:%d\n", offset);
-
-  space.SetPos(offset);
-  ZoneInfo zoneInfo;
-  zoneInfo.Stuff(space);
-  printf("zone id:%d, name:%s\n", zoneInfo.id, zoneInfo.name.c_str());
-  BOOST_FOREACH(int bannerid, zoneInfo.linked_banners)
-  {
-    printf("linked banner id:%d\n", bannerid);
-    offset = adTable.Get(bannerid);
-    printf("ad offset:%d\n", offset);
-    space.SetPos(offset);
-    AdInfo adInfo;
-    adInfo.Stuff(space);
-    printf("ad id:%d, instance:%s\n", adInfo.banner_id, adInfo.template_string.c_str());
+  ZoneInfo *zoneInfo = GetZoneInfoById(zoneid, space);
+  if (zoneInfo == NULL) {
+    std::string strError = "No ZoneInfo found by ";
+    strError += boost::lexical_cast<std::string>(zoneid);
+    response->StringResult(strError); 
+    return ;
   }
 
- 
+  printf("zone id:%d, name:%s\n", zoneInfo->id, zoneInfo->name.c_str());
+  BOOST_FOREACH(int bannerid, zoneInfo->linked_banners)
+  {
+    printf("linked banner id:%d\n", bannerid);
+    AdInfo *adInfo = GetAdInfoById(bannerid, space);
+    adInfo->Stuff(space);
+    printf("ad id:%d, instance:%s\n", adInfo->banner_id, adInfo->template_string.c_str());
+  }
 
   std::string out = "ad action : index=";
   out += qs["index"];

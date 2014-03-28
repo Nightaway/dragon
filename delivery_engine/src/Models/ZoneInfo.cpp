@@ -77,7 +77,7 @@ void ZoneInfo::Stuff(Space &space)
 
 unsigned ZoneInfo::Size()
 {
-	size_ = 0;
+	unsigned size_ = 0;
 	size_ += sizeof(id);	
 	size_ += sizeOf(name);
 	size_ += sizeof(type);

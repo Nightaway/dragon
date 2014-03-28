@@ -3,6 +3,7 @@
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
+#include "../config.h"
 #include "../Utility/DataModel.h"
 
 NS_USING_DRAGON
@@ -27,7 +28,7 @@ void deliveryController::ad(QueryString &qs)
   }
   printf("zoneid:%d\n", zoneid);
 
-  NamedSemiSpace space("DE_CACHE_DATA", 1024 * 1024);
+  NamedSemiSpace space(SHARED_MEM_OBJ_NAME, SHARED_MEM_OBJ_SIZE);
   space.Open();
 
   ZoneInfo *zoneInfo = GetZoneInfoById(zoneid, space);
@@ -43,6 +44,9 @@ void deliveryController::ad(QueryString &qs)
   {
     printf("linked banner id:%d\n", bannerid);
     AdInfo *adInfo = GetAdInfoById(bannerid, space);
+    if (adInfo == NULL)
+      continue;
+
     adInfo->Stuff(space);
     printf("ad id:%d, instance:%s\n", adInfo->banner_id, adInfo->template_string.c_str());
   }

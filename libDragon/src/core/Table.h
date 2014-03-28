@@ -14,13 +14,13 @@ template<typename T>
 class Table : public Object {
 public:
 	Table() : capacity_(0), table_(NULL) { 
-		size_ = 0;
+	        
 	}
 
 	Table(unsigned cap) : capacity_(cap) { 
-		size_ = capacity_ * sizeof(T **);
-		table_ = static_cast<T **>(Malloced::New(size_));
-		memset(table_, 0, size_);
+		unsigned size = capacity_ * sizeof(T **);
+		table_ = static_cast<T **>(Malloced::New(size));
+		memset(table_, 0, size);
 	}
 
 	~Table() {

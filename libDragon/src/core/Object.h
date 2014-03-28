@@ -39,15 +39,20 @@ NS_DRAGON
 			return (addr_ == NULL)?true:false;
 		}
 
-		T *operator*() const 
+		T operator*() const 
 		{
-			return addr_;
+			return *addr_;
 		}
 
 		T *operator->() const 
 		{
 			return addr_;
 		}
+
+                void *Address()
+                {
+                  return addr_;
+                }
 
 		static Ref<T> Cast(void *addr)
 		{
@@ -58,24 +63,48 @@ NS_DRAGON
 		{
 			return Ref<T>(reinterpret_cast<T *>(space.Allocate(sizeof(T))));
 		}
+                
+                static Ref<T> New(T value, Space &space)
+                {
+                  void *addr = space.Allocate(sizeof(T));
+                  memcpy(addr, &value, sizeof(T));
+                  return Ref<T>::Cast(addr);
+                }
 
 	private:
 		T *addr_;
 	};
 
-	class Object {
-	public:
-		Object();
-		~Object();
+  enum ObjectTag{
+    TAG_OBJECT = 0,
+    TAG_INTEGER,
+    TAG_DOUBLE,
+    TAG_STRING,
+    TAG_TABLE
+  };
 
-		unsigned Size()
-		{
-			return size_;
-		}
+   class Object {
+     public:
+       Object();
+       ~Object();
 
-	protected:
-		unsigned size_;
-	};
+       unsigned Size()
+       {
+         return sizeof(Object);
+       }
+   };
+
+  class Integer : public Object  {
+   public:
+    Integer();
+    ~Integer();
+    
+    int Value();
+    static Ref<Integer> New(int value, Space &space);
+
+  private:
+    void *addr_;
+  };
 
 NS_END
 

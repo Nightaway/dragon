@@ -3,7 +3,7 @@
 NS_USING_DRAGON
 
 OffsetTable::OffsetTable() :
-		capacity_(0), table_(NULL)
+  capacity_(0), table_(NULL)
 {
 
 }

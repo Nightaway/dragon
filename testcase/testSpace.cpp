@@ -10,6 +10,22 @@ NS_USING_DRAGON
 
 typedef Table<AdInfo> AdInfoTable;
 
+TEST(space, integer) {
+  NamedSemiSpace space("test", 1024);
+  space.Create();
+  
+  Ref<int> i = Ref<int>::New(10, space);
+  ASSERT_EQ(*i, 10);
+
+  Ref<double> d = Ref<double>::New(20.20, space);
+  ASSERT_EQ(*d, 20.20);
+
+  Ref<Integer> integer = Integer::New(20, space);
+  ASSERT_EQ(integer->Value(), 20);
+
+  space.Destroy();
+}
+
 TEST(space, object_test1) {
 	printf("Object:%d, String:%d\n", sizeof(Object), sizeof(String));
 }

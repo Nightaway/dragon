@@ -14,6 +14,7 @@
 #include <core/Space.h>
 #include <core/Table.h>
 
+#include "config.h"
 #include "sql.h.inc"
 
 #include "mysql_context.h"
@@ -68,7 +69,7 @@ void CacheTask::Run(dragon::Cycle &c)
                                          c.config["mysql"]["db"].c_str());
 
   GetAllZoneId(conn, zoneids);
-  NamedSemiSpace space("DE_CACHE_DATA", 1024 * 1024);
+  NamedSemiSpace space(SHARED_MEM_OBJ_NAME, SHARED_MEM_OBJ_SIZE);
   space.Create();
 
   OffsetTable zoneTable(1000, space);

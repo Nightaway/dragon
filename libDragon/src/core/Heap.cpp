@@ -25,7 +25,7 @@ Ref<String> StringHeap::Allocate(const char *c_str, unsigned size)
 	Ref<StringObject> strObj = Ref<StringObject>::Cast(Space::Allocate(sizeof(StringObject)));
 	strObj->mark = 0;
 	Ref<String> str = String::New(c_str, size, *this);
-	strObj->string = *(*str);
+	strObj->string = *str;
 	return str;
 }
 

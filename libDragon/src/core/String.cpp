@@ -4,7 +4,8 @@ NS_USING_DRAGON
 
 unsigned dragon::String::Size()
 {
-	size_ += sizeof(unsigned);
-	size_ += length_;
-	return size_;
+  unsigned size = 0;
+  size += sizeof(unsigned);
+  size += length_;
+  return size;
 }

@@ -80,7 +80,7 @@ void AdInfo::Stuff(Space &space)
 
 unsigned AdInfo::Size()
 {
-  size_ = 0;
+  unsigned size_ = 0;
   size_ += sizeof(banner_id);	
   size_ += sizeof(placement_id);
   size_ += sizeof(status);

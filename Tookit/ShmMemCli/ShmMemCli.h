@@ -7,10 +7,12 @@
 struct Option {
   bool ShowHelp;
   char *SharedMemObjName;
+  unsigned SharedMemObjSize;
 
   Option() {
     ShowHelp = false;
     SharedMemObjName = NULL;
+    SharedMemObjSize = 0;
   }
 };
 

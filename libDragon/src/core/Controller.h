@@ -8,6 +8,7 @@
 
 NS_DRAGON
 
+class Application;
 class Controller {
 protected:
 	DECLARE_CONTROLLER(Controller)
@@ -17,6 +18,7 @@ protected:
 protected:
 	HttpRequest  *request;
 	HttpResponse *response;
+        Application  *app;
 	
 public:
 	Controller() : request(NULL), response(NULL) {}
@@ -24,14 +26,19 @@ public:
 
 	void SetHttpRequest(HttpRequest *req)
 	{
-		request  = req;
+	  request  = req;
 	}
 
 	void SetHttpResponse(HttpResponse *res)
 	{
-		response = res;
+	  response = res;
 	}
 
+        void SetApplication(Application *application)
+        {
+          app = application;
+        }
+        
 	virtual ActionTable *GetActionTable();
 };
 

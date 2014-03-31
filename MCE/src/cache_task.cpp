@@ -81,6 +81,7 @@ void CacheTask::Run(dragon::Cycle &c)
     sql::ResultSet *rs = stmt->executeQuery();
     ZoneInfo zoneInfo;
     zoneInfo.Stuff(rs);
+    printf("zoneid %d\n", zoneid);
 
     sql::ResultSet *rsBanners = GetBannerResultSet(conn, zoneid);
     while (rsBanners != NULL && rsBanners->next()) {
@@ -114,6 +115,7 @@ void CacheTask::Run(dragon::Cycle &c)
                   
         unsigned offset = adTable.Get(ad.banner_id);
         if (offset == 0) {
+          printf("banner_id:%d\n", ad.banner_id);
           adTable.Put(ad.banner_id, space.GetPos());
           ad.Dump(space);
         }

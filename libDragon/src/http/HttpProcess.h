@@ -12,18 +12,20 @@
 #include <map>
 
 NS_DRAGON
-
+        class Application;
 	class HttpProcess :
 		public JavaScriptModule
  	{
 		std::map<std::string, JavaScriptSource *> Controllers_;
 
 		bool ProcessByJavaScript(RoutingTable &routingTable, 
-					     HttpRequest  &req, 
-                                             HttpResponse &res);
-		bool ProcessByCXX(RoutingTable &routingTable, 
-					     HttpRequest  &req, 
-                                             HttpResponse &res);
+                                         Application  &app,
+					 HttpRequest  &req, 
+                                         HttpResponse &res);
+		bool ProcessByCXX(RoutingTable &routingTable,
+                                  Application &app,
+				  HttpRequest  &req, 
+                                  HttpResponse &res);
 
 		public:
 			HttpProcess(JavaScriptCompiler &jsCompiler);
@@ -32,7 +34,8 @@ NS_DRAGON
 			virtual void Init();
 			virtual void Dispose();
 
-			virtual void Process(RoutingTable &routingTable, 
+			virtual void Process(RoutingTable &routingTable,
+                                             Application  &app,
 					     HttpRequest  &req, 
                                              HttpResponse &res);
 	};

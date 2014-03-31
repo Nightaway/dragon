@@ -5,7 +5,7 @@
 using namespace dragon;
 
 int main(int argc, char *argv[]) {	
-        const char *url   = "/delivery/ad?zoneid=5";
+        const char *url   = "/delivery/ad?zoneid=601";
 	const char *ip    = "127.0.0.1";
 	const char *host  = "localhost";
 	const char *userAgent  = "fx";
@@ -23,9 +23,13 @@ int main(int argc, char *argv[]) {
 	req.SetAcceptLanguage(StringRef(acceptLang, strlen(acceptLang)));
 
 	DEApplication app;
-	app.Start();
-	app.ResponseRequest(req, res);
-	app.End();
+	try {
+	  app.Start();
+	  app.ResponseRequest(req, res);
+	  app.End();
+	} catch (std::exception &e) {
+	  std::cout << "Exception:" << e.what() << std::endl;
+	}
 
 	std::string content = res.GetContent();
 	std::string type    = res.GetContentType();

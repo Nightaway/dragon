@@ -10,7 +10,6 @@ NS_DRAGON
 ZoneInfo *GetZoneInfoById(int id, NamedSemiSpace &space);
 AdInfo   *GetAdInfoById(int id, NamedSemiSpace &space);
 
-
 NS_END
 
 

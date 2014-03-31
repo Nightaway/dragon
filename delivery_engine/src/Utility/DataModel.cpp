@@ -30,6 +30,7 @@ AdInfo *dragon::GetAdInfoById(int id, NamedSemiSpace &space)
   unsigned offset = table.Get(id);
   if (offset == 0)
     return NULL;
+
   space.SetPos(offset);
   AdInfo *adInfo = new AdInfo();
   adInfo->Stuff(space);

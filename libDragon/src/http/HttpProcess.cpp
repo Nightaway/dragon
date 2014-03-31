@@ -1,5 +1,6 @@
 #include "HttpProcess.h"
 
+#include "../core/Application.h"
 #include "../core/QueryString.h"
 #include "../core/Controller.h"
 #include "../wrapper/Wrapper.h"
@@ -40,15 +41,16 @@ void HttpProcess::Dispose()
 
 }
 
-void HttpProcess::Process(RoutingTable &routingTable, 
+void HttpProcess::Process(RoutingTable &routingTable,
+                          Application  &app, 
 	     		  HttpRequest  &req, 
             		  HttpResponse &res)
 {
-	if (ProcessByJavaScript(routingTable, req, res))
+  if (ProcessByJavaScript(routingTable, app, req, res))
 	{
 		std::cout << "Process By JS" << std::endl;
 		return ;
-	} else if (ProcessByCXX(routingTable, req, res)) {
+	} else if (ProcessByCXX(routingTable, app, req, res)) {
 		std::cout << "Process By CXX" << std::endl;
 		return ;
 	} else {
@@ -57,6 +59,7 @@ void HttpProcess::Process(RoutingTable &routingTable,
 }
 
 bool HttpProcess::ProcessByJavaScript(RoutingTable &routingTable, 
+                                      Application  &app,
 			              HttpRequest  &req, 
                                       HttpResponse &res)
 {
@@ -122,6 +125,7 @@ bool HttpProcess::ProcessByJavaScript(RoutingTable &routingTable,
 }
 
 bool HttpProcess::ProcessByCXX(RoutingTable &routingTable,
+                               Application  &app,
 	                       HttpRequest  &req, 
                                HttpResponse &res)
 {
@@ -140,6 +144,7 @@ bool HttpProcess::ProcessByCXX(RoutingTable &routingTable,
 				{
 					pCtrl->SetHttpRequest(&req);
 					pCtrl->SetHttpResponse(&res);
+                                        pCtrl->SetApplication(&app);
 
 					//std::cout << "actionTable->actName:" << actionTable->actName << std::endl;
 					Action action = actionTable->action;

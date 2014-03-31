@@ -6,9 +6,9 @@
 #include "../Macro.h"
 #include "../Module.h"
 
-#define ITEM_BEGIN "["
-#define ITEM_END   "]"
-#define ITEM_SEPERAPOR " : "
+#define ITEM_BEGIN ""
+#define ITEM_END   ""
+#define ITEM_SEPERATOR "|~|"
 
 NS_DRAGON
 

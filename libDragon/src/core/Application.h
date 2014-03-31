@@ -35,14 +35,23 @@ protected:
 public:
 	Application();
 	virtual ~Application();
-
 	virtual void Start();
 	virtual void End();
-
 	virtual void SetAppPath();
 	virtual void SetAppName();
 
 	void ResponseRequest(HttpRequest &req, HttpResponse &res);
+        
+        Log &GetErrorLog()
+        {
+          return logError_;
+        }
+
+        Log &GetInfoLog()
+          {
+            return logInfo_;
+          }
+        
 };
 
 NS_END

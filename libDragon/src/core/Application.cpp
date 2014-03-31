@@ -81,5 +81,5 @@ void Application::ResponseRequest(HttpRequest &req, HttpResponse &res)
 	std::string rewritedUrl = urlRewriting_.Rewrite(req.GetUrl());
 	req.SetRewritedUrl(rewritedUrl);
 	RoutingTable table = urlRouting_.Route(rewritedUrl);
-	httpProcess_.Process(table, req, res);
+	httpProcess_.Process(table, *this, req, res);
 }

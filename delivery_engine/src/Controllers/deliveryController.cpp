@@ -5,6 +5,7 @@
 
 #include "../config.h"
 #include "../Utility/DataModel.h"
+#include "../Utility/Filter.h"
 
 NS_USING_DRAGON
 NS_USING_BOOST
@@ -19,12 +20,14 @@ END_ACTION_MAP()
 
 void deliveryController::ad(QueryString &qs)
 {
+  Log &error = app->GetErrorLog();
   int zoneid = -1;
   try {
     zoneid = lexical_cast<int>(qs["zoneid"]);
   } catch (bad_lexical_cast &e) {
-    response->StringResult(e.what());
-    return ;
+    error.LogFmt("zoneid [%s] %s", qs["zoneid"].c_str(), e.what());
+    response->StringResult("");
+    return;
   }
   printf("zoneid:%d\n", zoneid);
 
@@ -33,13 +36,20 @@ void deliveryController::ad(QueryString &qs)
 
   ZoneInfo *zoneInfo = GetZoneInfoById(zoneid, space);
   if (zoneInfo == NULL) {
-    std::string strError = "No ZoneInfo found by ";
+    std::string strError = "ZoneInfo by id [";
     strError += boost::lexical_cast<std::string>(zoneid);
-    response->StringResult(strError); 
+    strError += "] ";
+    strError += "not found in Shared Memory Object named [";
+    strError += SHARED_MEM_OBJ_NAME "] size [";
+    strError += boost::lexical_cast<std::string>(SHARED_MEM_OBJ_SIZE);
+    strError += "].";
+    error.LogFmt(strError.c_str());
+    response->StringResult(""); 
     return ;
   }
-
   printf("zone id:%d, name:%s\n", zoneInfo->id, zoneInfo->name.c_str());
+
+  std::vector<AdInfo *> adInfos;
   BOOST_FOREACH(int bannerid, zoneInfo->linked_banners)
   {
     printf("linked banner id:%d\n", bannerid);
@@ -47,10 +57,21 @@ void deliveryController::ad(QueryString &qs)
     if (adInfo == NULL)
       continue;
 
-    adInfo->Stuff(space);
     printf("ad id:%d, instance:%s\n", adInfo->banner_id, adInfo->template_string.c_str());
+    
+    adInfos.push_back(adInfo);
   }
 
+  Information info = {
+    request,
+    response
+  };
+  filter(adInfos, info, CookieFilter);
+
+  BOOST_FOREACH(AdInfo *ad, adInfos)
+  {
+    printf("ad id:%d\n", ad->banner_id);
+  }
   std::string out = "ad action : index=";
   out += qs["index"];
   response->StringResult(out);

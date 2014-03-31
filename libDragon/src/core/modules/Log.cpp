@@ -161,7 +161,7 @@ void Log::LogMsg(std::string msg)
 	}
 
 	std::stringstream ss;
-	ss << "[" << getppid() << "]" << TimeString() << "[" << logLevel << "]" << ITEM_SEPERAPOR << msg << std::endl;
+	ss << getppid() << ITEM_SEPERATOR << TimeString() << ITEM_SEPERATOR << msg << std::endl;
 	std::string str = ss.str();
 	fwrite(str.c_str(), str.length(), 1, file_);
 }

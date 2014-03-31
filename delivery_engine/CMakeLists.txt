@@ -24,19 +24,27 @@ set(controller_src_list
 set(model_header_list
 	src/Models/AdInfo.h
 	src/Models/ZoneInfo.h
+	src/Models/VisitorInfo.h
 )
 
 set(model_src_list
 	src/Models/AdInfo.cpp
 	src/Models/ZoneInfo.cpp
+	src/Models/VisitorInfo.cpp
 )
 
 set(util_header_list
 	src/Utility/DataModel.h
+	src/Utility/Filter.h
 )
 
 set(util_src_list
 	src/Utility/DataModel.cpp
+	src/Utility/Filter.cpp
+)
+
+set(filter_src_list
+	src/Utility/Filters/CookieFilter.cpp
 )
 
 set(src_list
@@ -44,6 +52,7 @@ set(src_list
 	${app_src_list}
 	${model_src_list}
 	${util_src_list}
+	${filter_src_list}
 )
 
 configure_file (

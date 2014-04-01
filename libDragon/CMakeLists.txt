@@ -94,12 +94,21 @@ set(maintenance_src_list
 	src/maintenance/Cycle.cpp
 )
 
+set(utilily_src_list 
+	src/utility/DateTime.cpp
+)
+
+set(utilily_header_list 
+	src/utility/DateTime.h
+)
+
 set(src_list
 	${core_src_list}
 	${core_module_src_list}
 	${http_src_list}
 	${wrapper_src_list}
 	${maintenance_src_list}
+	${utilily_src_list}
 )
 
 add_library(Dragon SHARED ${src_list})

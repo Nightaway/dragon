@@ -1,5 +1,7 @@
 #include "deliveryController.h"
 
+#include <utility/DateTime.h>
+
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
@@ -14,19 +16,19 @@ IMPLEMENT_CONTROLLER(Controller, deliveryController)
 
 BEGIN_ACTION_MAP(deliveryController)
 	ACTION(deliveryController, ad)
-	ACTION_OP1(deliveryController, lg, "__")
-	ACTION(deliveryController, ck)
+	ACTION(deliveryController, lg)
+	ACTION_OP1(deliveryController, ck, "__")
 END_ACTION_MAP()
 
 void deliveryController::ad(QueryString &qs)
 {
   Log &error = app->GetErrorLog();
-  int zoneid = -1;
+  int zoneid = 0;
   try {
     zoneid = lexical_cast<int>(qs["zoneid"]);
   } catch (bad_lexical_cast &e) {
     error.LogFmt("zoneid [%s] %s", qs["zoneid"].c_str(), e.what());
-    response->StringResult("");
+    response->StringResult(" ");
     return;
   }
   printf("zoneid:%d\n", zoneid);
@@ -44,7 +46,8 @@ void deliveryController::ad(QueryString &qs)
     strError += boost::lexical_cast<std::string>(SHARED_MEM_OBJ_SIZE);
     strError += "].";
     error.LogFmt(strError.c_str());
-    response->StringResult(""); 
+    response->StringResult(" "); 
+    space.Close();
     return ;
   }
   printf("zone id:%d, name:%s\n", zoneInfo->id, zoneInfo->name.c_str());
@@ -72,8 +75,9 @@ void deliveryController::ad(QueryString &qs)
   {
     printf("ad id:%d\n", ad->banner_id);
   }
-  std::string out = "ad action : index=";
-  out += qs["index"];
+
+  std::string out = "zoneid=";
+  out += qs["zoneid"];
   response->StringResult(out);
 
   space.Close();
@@ -81,6 +85,29 @@ void deliveryController::ad(QueryString &qs)
 
 void deliveryController::lg(QueryString &qs)
 {
+  Log &error = app->GetErrorLog();
+  int zoneid = 0, bannerId = 0, campaignid = 0;
+
+  try {
+    zoneid = boost::lexical_cast<int>(qs["zoneid"]);
+    bannerId = boost::lexical_cast<int>(qs["bannerid"]);
+    if (!qs["campaignid"].empty())
+      campaignid = boost::lexical_cast<int>(qs["campaignid"]);
+  } catch (boost::bad_lexical_cast) {
+    error.LogFmt("lg action cast error: zoneid [%s], bannerid [%s], campaignid [%s]", 
+          qs["zoneid"].c_str(), qs["bannerid"].c_str(), qs["campaignid"].c_str());
+    response->StringResult(" ");
+    return ;
+  }
+
+  if (!qs["campaignid"].empty()) {
+    std::string impc = "impc[" +  qs["campaignid"] + "]";
+    response->setCookie(impc, "1", DateTime::YearFromNow(1), "/");
+  }
+
+  std::string impb = "impb[" +  qs["bannerid"] + "]";
+  response->setCookie(impb, "1", DateTime::YearFromNow(1), "/");
+
   response->StringResult("lg action");
 }
 

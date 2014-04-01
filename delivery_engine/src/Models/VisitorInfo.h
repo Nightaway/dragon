@@ -27,9 +27,9 @@ class VisitorInfo {
 private:
   static const char *strQueryVisitorFilterInfoByCId;
   static const char *strQueryVisitorFilterInfoByBId;
+  
   int id;
   std::vector<Visitor> infos;
 };
-
 
 #endif

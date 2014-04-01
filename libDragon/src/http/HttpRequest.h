@@ -2,6 +2,7 @@
 #define __HTTP_REQUEST_H__
 
 #include <string>
+#include <map> 
 #include "../core/Macro.h"
 #include "../core/StringRef.h"
 
@@ -14,6 +15,8 @@ typedef enum {
 	kHttp_Method_Delete
 } HttpMethod;
 
+typedef std::map<std::string, std::string> Cookie;
+
 class HttpRequest {
 	HttpMethod Method_;
 	StringRef Url_;
@@ -22,10 +25,10 @@ class HttpRequest {
 	StringRef UserAgent_;
 	StringRef UserCookie_;
 	StringRef AcceptLanguage_;
-
 	std::string RewritedUrl_;
-	
-	public:
+	Cookie cookies_;
+
+public:
 	HttpRequest();
 	HttpRequest(HttpMethod method, 
 		   StringRef  url,
@@ -33,7 +36,7 @@ class HttpRequest {
 		   StringRef  host,
 		   StringRef  userAgent,
 		   StringRef  userCookie,
-	           StringRef  acceptLanguage);
+	       StringRef  acceptLanguage);
 	~HttpRequest();
 
 	void SetMethod(HttpMethod method)
@@ -115,6 +118,13 @@ class HttpRequest {
 	{
 		return RewritedUrl_;
 	}
+
+	Cookie GetCookie()
+	{
+		return cookies_;
+	}
+
+	void ParseCookie();
 };
 
 

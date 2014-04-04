@@ -102,6 +102,14 @@ set(utilily_header_list
 	src/utility/DateTime.h
 )
 
+set(db_src_list 
+	src/db/MysqlContext.cpp
+)
+
+set(db_header_list 
+	src/db/MysqlContext.h
+)
+
 set(src_list
 	${core_src_list}
 	${core_module_src_list}
@@ -109,13 +117,14 @@ set(src_list
 	${wrapper_src_list}
 	${maintenance_src_list}
 	${utilily_src_list}
+	${db_src_list}
 )
 
 add_library(Dragon SHARED ${src_list})
 install(TARGETS Dragon DESTINATION lib)
-install(FILES ${header_list}    DESTINATION include/dragon/)
-install(FILES ${core_header_list}    DESTINATION include/dragon/core)
-install(FILES ${core_module_header_list}    DESTINATION include/dragon/core/modules)
-install(FILES ${http_header_list}    DESTINATION include/dragon/http)
+install(FILES ${header_list} DESTINATION include/dragon/)
+install(FILES ${core_header_list} DESTINATION include/dragon/core)
+install(FILES ${core_module_header_list} DESTINATION include/dragon/core/modules)
+install(FILES ${http_header_list} DESTINATION include/dragon/http)
 install(FILES ${wrapper_header_list} DESTINATION include/dragon/wrapper)
 install(FILES ${maintenance_header_list} DESTINATION include/dragon/maintenance)

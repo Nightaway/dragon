@@ -1,21 +1,24 @@
 #ifndef __MYSQL_CONTEXT_H__
 #define __MYSQL_CONTEXT_H__
 
-#include <core/Context.h>
+#include "../core/Macro.h"
+#include "../core/Context.h"
 
 #include <mysql_driver.h>
 #include <mysql_connection.h>
 #include <cppconn/statement.h>
 
-class MySQLContext : public dragon::Context {
+NS_DRAGON
+
+class MysqlContext : public Context {
 public:
-	MySQLContext(){}
-	~MySQLContext() {}
+	MysqlContext(){}
+	~MysqlContext() {}
 
 	sql::Connection *Connect(const char *host,
-				 const char *user,
-				 const char *pass,
-				 const char *db)
+				 			 const char *user,
+							 const char *pass,
+							 const char *db)
 	{	
 		static sql::Connection *conn = NULL;
 		if (conn == NULL || conn->isClosed()) {
@@ -30,5 +33,7 @@ public:
 private:
 	sql::Driver *driver_;
 };
+
+NS_END
 
 #endif

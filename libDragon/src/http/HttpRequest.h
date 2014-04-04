@@ -15,6 +15,7 @@ typedef enum {
 	kHttp_Method_Delete
 } HttpMethod;
 
+typedef std::pair<std::string, std::string> CookiePair;
 typedef std::map<std::string, std::string> Cookie;
 
 class HttpRequest {

@@ -23,6 +23,16 @@ class VisitorInfo {
   void Dump(dragon::Space &space);
   void Stuff(dragon::Space &space);
   void Stuff(sql::Connection *conn, int id, int type);
+
+  int GetId()
+  {
+    return id;
+  }
+
+  std::vector<Visitor> &GetInfos()
+  {
+    return infos;
+  }
  
 private:
   static const char *strQueryVisitorFilterInfoByCId;

@@ -10,13 +10,11 @@ set (src_header
 	src/config.h
 	src/sql.h.inc
 	src/maintenance_cache_engine.h
-	src/mysql_context.h
 	src/cache_task.h
 )
 
 set (src_list
 	src/maintenance_cache_engine.cpp
-	src/mysql_context.cpp
 	src/cache_task.cpp
 )
 

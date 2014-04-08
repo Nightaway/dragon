@@ -64,7 +64,7 @@ inline void GetImpFlag(std::set<int> &set, const Cookie &cookie, const std::stri
 	}
 }
 
-inline std::string GenTag(int id, const std::string prefix)
+inline std::string GenFlag(int id, const std::string prefix)
 {
 	std::string strFlag = prefix;
 	strFlag += "[";
@@ -77,7 +77,7 @@ inline void DeleteImpFlag(std::set<int> &set, HttpResponse *response,const std::
 {
 	BOOST_FOREACH(int id, set)
 	{
-		response->setCookie(GenTag(id, prefix), "deleted", DATE_1970, "/");
+		response->setCookie(GenFlag(id, prefix), "deleted", DATE_1970, "/");
 	}
 }
 
@@ -146,9 +146,11 @@ void GetCountFlag(std::map<int, cookie_count_all_t> &counts, const Cookie &cooki
 				item_pair.time  = item_time;
 				cc.timeDays.push_back(item_pair);
 			}
+
+			printf("---------- Save id %d ------------\n", cc.id);
+			//	counts[cc.id] = cc;
 			counts[cc.id] = cc;
 		}
-			
 	}
 }
 
@@ -274,34 +276,45 @@ bool CookieFilter(AdInfo *adInfo, Information &infos) {
 	std::map<int, cookie_count_all_t> countc;
 	std::map<int, cookie_count_all_t> countb;
 	MysqlContext mysqlCtx;
-
 	sql::Connection *conn = mysqlCtx.Connect("localhost", "root", "", "dap");
 
 	GetImpFlag(impc_ids, infos.req->GetCookie(), "impc");
 	GetImpFlag(impb_ids, infos.req->GetCookie(), "impb");
 
-	BOOST_FOREACH(int id, impb_ids)
-	{
+	BOOST_FOREACH(int id, impb_ids)	{
 		printf("imp banner id:%d\n", id);
+	}
+
+	BOOST_FOREACH(int id, impb_ids)	{
+		printf("imp campaign id:%d\n", id);
 	}
 
 	GetCountFlag(countc, infos.req->GetCookie(), "countc");
 	GetCountFlag(countb, infos.req->GetCookie(), "countb");
 
-	if (countc.size() == 0) {
-		printf("init flag countb!\n");
-		InitCountFlag(adInfo->banner_id, countb, "countb", conn);
-	} else {
-		printf("update flag countb!\n");
-		UpdateFlag(countb);
+	typedef std::pair<int, cookie_count_all_t> count_pair_t;
+	BOOST_FOREACH(count_pair_t p, countb)	{
+		printf("count banner id:%d size:%d\n", p.first, countb.size());
 	}
 
-	if (countb.size() == 0) {
+	BOOST_FOREACH(count_pair_t p, countc)	{
+		printf("count campaign id:%d size:%d\n", p.first, countb.size());
+	}
+
+	if (countc.size() == 0) {
 		printf("init flag countc!\n");
 		InitCountFlag(adInfo->campaign_id, countc, "countc", conn);
 	} else {
 		printf("update flag countc!\n");
 		UpdateFlag(countc);
+	}
+
+	if (countb.size() == 0) {
+		printf("init flag countb!\n");
+		InitCountFlag(adInfo->banner_id, countb, "countb", conn);
+	} else {
+		printf("update flag countb!\n");
+		UpdateFlag(countb);
 	}
 
     SetFlag(countc, infos.res, "countc");

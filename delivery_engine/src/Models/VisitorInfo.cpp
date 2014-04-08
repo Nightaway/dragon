@@ -52,4 +52,8 @@ void VisitorInfo::Stuff(sql::Connection *conn, int id, int type)
     Visitor info = {rs->getString("type"), rs->getInt("count"), rs->getInt("time"), rs->getString("activate_time")};
     infos.push_back(info);
   }
+
+  if (infos.size() == 0) {
+    this->id = -1;
+  }
 }

@@ -213,16 +213,19 @@ void InitCountFlag(int id, std::map<int, cookie_count_all_t> &counts, const std:
 	if (prefix == "countb") {
 		VisitorInfo visitorInfo;
 		visitorInfo.Stuff(conn, id, kFilterTypeBanner);
-		printf("banner id:%d\n", visitorInfo.GetId());
-		cookie_count_all_t count = InitCountFromMysql(visitorInfo, conn);
-		counts[id] = count;
-
+		if (visitorInfo.GetId() != -1) {
+			printf("banner id:%d\n", visitorInfo.GetId());
+			cookie_count_all_t count = InitCountFromMysql(visitorInfo, conn);
+			counts[id] = count;
+		}
 	} else if (prefix == "countc") {
 		VisitorInfo visitorInfo;
 		visitorInfo.Stuff(conn, id, kFilterTypeCampaign);
-		printf("campaign id:%d\n", visitorInfo.GetId());	
-		cookie_count_all_t count = InitCountFromMysql(visitorInfo, conn);
-		counts[id] = count;
+		if (visitorInfo.GetId() != -1 ) {
+			printf("campaign id:%d\n", visitorInfo.GetId());	
+			cookie_count_all_t count = InitCountFromMysql(visitorInfo, conn);
+			counts[id] = count;
+		}
 	}	
 }
 

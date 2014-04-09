@@ -34,6 +34,8 @@ typedef struct {
 	std::vector<cookie_count_t> timeDays;
 } cookie_count_all_t;
 
+typedef std::pair<int, cookie_count_all_t> count_pair_t;
+
 inline int GetIdInTag(std::string prefix, std::string flag)
 {
 	prefix = prefix + "[";
@@ -73,12 +75,17 @@ inline std::string GenFlag(int id, const std::string prefix)
 	return strFlag;
 }
 
-inline void DeleteImpFlag(std::set<int> &set, HttpResponse *response,const std::string &prefix)
+inline void DeleteImpFlag(std::set<int> &set, HttpResponse *response, const std::string &prefix)
 {
 	BOOST_FOREACH(int id, set)
 	{
 		response->setCookie(GenFlag(id, prefix), "deleted", DATE_1970, "/");
 	}
+}
+
+inline void DeleteImpFlag(int id, HttpResponse *response, const std::string &prefix)
+{
+	response->setCookie(GenFlag(id, prefix), "deleted", DATE_1970, "/");
 }
 
 inline void UpdateFlag(std::map<int, cookie_count_all_t> &counts)
@@ -273,7 +280,29 @@ void SetFlag(const std::map<int, cookie_count_all_t> &counts, HttpResponse *resp
 	}
 }
 
-bool CookieFilter(AdInfo *adInfo, Information &infos) {
+bool CheckFlag(std::map<int, cookie_count_all_t> &counts, int id)
+{
+	time_t now = time(NULL);
+	if (counts.find(id) != counts.end()) 
+	{
+		cookie_count_all_t cc = counts[id];
+		//std::cout << "time_week:" << cc.timeWeek.time << std::endl;
+
+		if (cc.timeWeek.count != 0  && now <= cc.timeWeek.time && cc.count >= cc.timeWeek.count)
+			return true;
+
+		BOOST_FOREACH(cookie_count_t &p, cc.timeDays)
+		{	
+		//std::cout << "cnt:" << p.count << std::endl;
+
+			if (now <= p.time && cc.count >= p.count)
+				return true;
+		}
+	}
+	return false;
+}
+
+bool VisitorFilter(AdInfo *adInfo, Information &infos) {
 	std::set<int> impc_ids;
 	std::set<int> impb_ids;
 	std::map<int, cookie_count_all_t> countc;
@@ -281,21 +310,14 @@ bool CookieFilter(AdInfo *adInfo, Information &infos) {
 	MysqlContext mysqlCtx;
 	sql::Connection *conn = mysqlCtx.Connect("localhost", "root", "", "dap");
 
+	printf("ad id : %d, campaign id : %d\n", adInfo->banner_id, adInfo->campaign_id);
+
 	GetImpFlag(impc_ids, infos.req->GetCookie(), "impc");
 	GetImpFlag(impb_ids, infos.req->GetCookie(), "impb");
-
-	BOOST_FOREACH(int id, impb_ids)	{
-		printf("imp banner id:%d\n", id);
-	}
-
-	BOOST_FOREACH(int id, impb_ids)	{
-		printf("imp campaign id:%d\n", id);
-	}
 
 	GetCountFlag(countc, infos.req->GetCookie(), "countc");
 	GetCountFlag(countb, infos.req->GetCookie(), "countb");
 
-	typedef std::pair<int, cookie_count_all_t> count_pair_t;
 	BOOST_FOREACH(count_pair_t p, countb)	{
 		printf("count banner id:%d size:%d\n", p.first, countb.size());
 	}
@@ -304,27 +326,39 @@ bool CookieFilter(AdInfo *adInfo, Information &infos) {
 		printf("count campaign id:%d size:%d\n", p.first, countb.size());
 	}
 
-	if (countc.size() == 0) {
-		printf("init flag countc!\n");
-		InitCountFlag(adInfo->campaign_id, countc, "countc", conn);
-	} else {
-		printf("update flag countc!\n");
-		UpdateFlag(countc);
-	}
+	bool ret = false;
+	bool is_found_imp_banner_flag   = false;
+	bool is_found_imp_campagin_flag = false;
+	if (impc_ids.find(adInfo->campaign_id) != impc_ids.end()) {
+		is_found_imp_campagin_flag = true;
+		printf("found campaign imp flag\n");
+		if (countc.size() == 0) {
+			printf("init flag countc!\n");
+			InitCountFlag(adInfo->campaign_id, countc, "countc", conn);
+		} else {
+			printf("update flag countc!\n");
+			UpdateFlag(countc);
+		}
+		ret = CheckFlag(countc, adInfo->campaign_id);
+		SetFlag(countc, infos.res, "countc");
+		DeleteImpFlag(adInfo->campaign_id, infos.res, "impc");
+	} 
 
-	if (countb.size() == 0) {
-		printf("init flag countb!\n");
-		InitCountFlag(adInfo->banner_id, countb, "countb", conn);
-	} else {
-		printf("update flag countb!\n");
-		UpdateFlag(countb);
-	}
+	if (impb_ids.find(adInfo->banner_id) != impb_ids.end()) {
+		is_found_imp_banner_flag = true;
+		printf("found banner imp flag\n");
+		if (countb.size() == 0) {
+			printf("init flag countb!\n");
+			InitCountFlag(adInfo->banner_id, countb, "countb", conn);
+		} else {
+			printf("update flag countb!\n");
+			UpdateFlag(countb);
+		}
+		ret = CheckFlag(countb, adInfo->banner_id);
+		SetFlag(countb, infos.res, "countb");
+		DeleteImpFlag(adInfo->banner_id, infos.res, "impb");
+	} 
 
-    SetFlag(countc, infos.res, "countc");
-    SetFlag(countb, infos.res, "countb");
-
-	DeleteImpFlag(impc_ids, infos.res, "impc");
-	DeleteImpFlag(impb_ids, infos.res, "impb");
-	return false;
+	return ret;
 }
             

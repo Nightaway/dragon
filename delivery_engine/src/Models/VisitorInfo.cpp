@@ -37,6 +37,7 @@ void VisitorInfo::Stuff(sql::Connection *conn, int id, int type)
 {
   this->id = id;
   const char *strQuery = NULL;
+  
   if (type == kFilterTypeCampaign) {
     strQuery = strQueryVisitorFilterInfoByCId;
   } else if (type == kFilterTypeBanner) {

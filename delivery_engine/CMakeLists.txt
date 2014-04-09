@@ -44,7 +44,8 @@ set(util_src_list
 )
 
 set(filter_src_list
-	src/Utility/Filters/CookieFilter.cpp
+	src/Utility/Filters/VisitorFilter.cpp
+	src/Utility/Filters/StandardFilter.cpp
 )
 
 set(src_list

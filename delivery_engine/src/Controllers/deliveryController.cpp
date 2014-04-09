@@ -31,21 +31,14 @@ void deliveryController::ad(QueryString &qs)
     response->StringResult(" ");
     return;
   }
-  printf("zoneid:%d\n", zoneid);
 
   NamedSemiSpace space(SHARED_MEM_OBJ_NAME, SHARED_MEM_OBJ_SIZE);
   space.Open();
 
   ZoneInfo *zoneInfo = GetZoneInfoById(zoneid, space);
   if (zoneInfo == NULL) {
-    std::string strError = "ZoneInfo by id [";
-    strError += boost::lexical_cast<std::string>(zoneid);
-    strError += "] ";
-    strError += "not found in Shared Memory Object named [";
-    strError += SHARED_MEM_OBJ_NAME "] size [";
-    strError += boost::lexical_cast<std::string>(SHARED_MEM_OBJ_SIZE);
-    strError += "].";
-    error.LogFmt(strError.c_str());
+    error.LogFmt("ZoneInfo by id [%d], not found in Shared Memory Object named [%s] size[%d]", 
+                  zoneid, SHARED_MEM_OBJ_NAME, SHARED_MEM_OBJ_SIZE);
     response->StringResult(" "); 
     space.Close();
     return ;
@@ -67,20 +60,25 @@ void deliveryController::ad(QueryString &qs)
 
   Information info = {
     request,
-    response
+    response,
+    &qs,
   };
-  filter(adInfos, info, CookieFilter);
+  filter(adInfos, info, VisitorFilter);
 
   BOOST_FOREACH(AdInfo *ad, adInfos)
   {
-    printf("ad id:%d\n", ad->banner_id);
+    std::string out = "banenr_id=";
+    out += boost::lexical_cast<std::string>(ad->banner_id);
+    response->StringResult(out);
+    space.Close();
+    return ;
   }
 
   std::string out = "zoneid=";
   out += qs["zoneid"];
   response->StringResult(out);
-
   space.Close();
+  return ;
 }
 
 void deliveryController::lg(QueryString &qs)

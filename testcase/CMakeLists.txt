@@ -9,6 +9,6 @@ include_directories(../v8/include)
 
 add_executable(dragon_test testmain.cpp testApp1.cpp testParseConfig.cpp testJavaScriptCompiler.cpp testSpace.cpp)
 
-target_link_libraries(dragon_test gtest Dragon DE rt pthread mysqlcppconn boost_system boost_filesystem boost_thread boost_date_time v8_base.x64.a v8_nosnapshot.x64.a)
+target_link_libraries(dragon_test gtest Dragon DE rt pthread mysqlcppconn boost_system boost_filesystem boost_thread boost_date_time boost_regex v8_base.x64.a v8_nosnapshot.x64.a)
 
 

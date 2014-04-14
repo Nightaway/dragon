@@ -7,15 +7,15 @@ include_directories(../delivery_engine/src)
 include_directories(../v8/include)
 
 set (src_header
-	src/config.h
-	src/sql.h.inc
-	src/maintenance_cache_engine.h
-	src/cache_task.h
+	 src/config.h
+	 src/sql.h.inc
+	 src/maintenance_cache_engine.h
+	 src/cache_task.h
 )
 
 set (src_list
-	src/maintenance_cache_engine.cpp
-	src/cache_task.cpp
+	 src/maintenance_cache_engine.cpp
+	 src/cache_task.cpp
 )
 
 configure_file (
@@ -24,7 +24,7 @@ configure_file (
 )
 
 add_executable(MCE ${src_list})
-target_link_libraries(MCE Dragon DE rt pthread mysqlcppconn boost_system boost_filesystem boost_thread boost_date_time boost_regex v8_base.x64.a v8_nosnapshot.x64.a)
+target_link_libraries(MCE Dragon DE redis htmlcxx rt bz2 pthread mysqlcppconn boost_system boost_filesystem boost_thread boost_date_time boost_regex v8_base.x64.a v8_nosnapshot.x64.a)
 install(TARGETS MCE DESTINATION MCE/sbin)
 install(DIRECTORY logs DESTINATION MCE)
 install(DIRECTORY scripts DESTINATION MCE)

@@ -10,6 +10,7 @@ class DateTime
 {
 public:
 	static std::string YearFromNow(size_t times);
+	static std::string YearFromNow1(size_t times);
 };
 
 NS_END

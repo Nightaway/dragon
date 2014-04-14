@@ -120,7 +120,7 @@ public:
 		return RewritedUrl_;
 	}
 
-	Cookie GetCookie()
+	Cookie &GetCookie()
 	{
 		return cookies_;
 	}

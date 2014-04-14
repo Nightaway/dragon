@@ -5,6 +5,7 @@ struct Information {
   dragon::HttpRequest     *req;
   dragon::HttpResponse    *res;
   dragon::QueryString	  *qs;
+  dragon::Config		  *config;
 };
 
 #endif

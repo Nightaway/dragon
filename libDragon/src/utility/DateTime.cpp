@@ -10,3 +10,12 @@ std::string dragon::DateTime::YearFromNow(size_t times)
 	strftime(buf, 30, "%a, %m-%d-%Y %X GMT", newtime);
 	return std::string(buf);
 }
+
+std::string dragon::DateTime::YearFromNow1(size_t times)
+{
+	char buf[30];
+	time_t now = time(NULL) + 31536000 * times;
+	tm *newtime = gmtime(&now);
+	strftime(buf, 30, "%a, %d-%b-%Y %X GMT", newtime);
+	return std::string(buf);
+}

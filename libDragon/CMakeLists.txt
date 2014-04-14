@@ -96,10 +96,18 @@ set(maintenance_src_list
 
 set(utilily_src_list 
 	src/utility/DateTime.cpp
+	src/utility/Url.cpp
+	src/utility/StringAlogrithms.cpp
+	src/utility/Crc.cpp
+	src/utility/Bz2.cpp
 )
 
 set(utilily_header_list 
 	src/utility/DateTime.h
+	src/utility/Url.h
+	src/utility/StringAlogrithms.h
+	src/utility/Crc.h
+	src/utility/Bz2.h
 )
 
 set(db_src_list 

@@ -2,8 +2,11 @@ project(delivery_engine)
 
 cmake_minimum_required(VERSION 2.6)
 
+add_subdirectory(${PROJECT_SOURCE_DIR}/src/Utility/libRedis)
+
 include_directories(../libDragon/src)
 include_directories(../v8/include)
+include_directories(${PROJECT_SOURCE_DIR}/src/Utility/libRedis)
 
 set(app_header_list 
 	src/DEApplication.h
@@ -36,16 +39,23 @@ set(model_src_list
 set(util_header_list
 	src/Utility/DataModel.h
 	src/Utility/Filter.h
+	src/Utility/IPLocator.h
+	src/Utility/RedisContext.h
 )
 
 set(util_src_list
 	src/Utility/DataModel.cpp
 	src/Utility/Filter.cpp
+	src/Utility/IPLocator.cpp
+	src/Utility/RedisContext.cpp
 )
 
 set(filter_src_list
 	src/Utility/Filters/VisitorFilter.cpp
 	src/Utility/Filters/StandardFilter.cpp
+	src/Utility/Filters/CookieRedirect.cpp
+	src/Utility/Filters/MotuFilter.cpp
+	src/Utility/Filters/ContentFilter.cpp
 )
 
 set(src_list

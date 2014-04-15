@@ -101,7 +101,7 @@ void CacheTask::Run(dragon::Cycle &c)
                   
        boost::scoped_ptr<sql::PreparedStatement> stmt(conn->prepareStatement(strQueryInstance));
        stmt->setInt(1, ad.banner_id);
-       sql::ResultSet *rsInstance = stmt->executeQuery();
+       boost::scoped_ptr<sql::ResultSet> rsInstance(stmt->executeQuery());
 
         if (rsInstance->next()) {
            ad.template_string = rsInstance->getString("instance");

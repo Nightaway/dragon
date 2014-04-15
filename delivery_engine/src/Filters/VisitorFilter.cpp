@@ -342,7 +342,9 @@ bool VisitorFilter(AdInfo *adInfo, Information &infos) {
 		ret = CheckFlag(countc, adInfo->campaign_id);
 		SetFlag(countc, infos.res, "countc");
 		DeleteImpFlag(adInfo->campaign_id, infos.res, "impc");
-	} 
+	} else {
+		ret = CheckFlag(countc, adInfo->campaign_id);
+	}
 
 	if (impb_ids.find(adInfo->banner_id) != impb_ids.end()) {
 		is_found_imp_banner_flag = true;
@@ -357,7 +359,9 @@ bool VisitorFilter(AdInfo *adInfo, Information &infos) {
 		ret = CheckFlag(countb, adInfo->banner_id);
 		SetFlag(countb, infos.res, "countb");
 		DeleteImpFlag(adInfo->banner_id, infos.res, "impb");
-	} 
+	} else {
+		ret = CheckFlag(countb, adInfo->banner_id);
+	}
 
 	return ret;
 }

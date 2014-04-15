@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "Controllers/deliveryController.h"
+#include "Filters/Filter.h"
 
 #include <iostream>
 
@@ -13,6 +14,9 @@ void DEApplication::Start()
 	std::cout << "DE Start at path:" << appPath_ << std::endl;
 
 	ADD_CONTROLLER(deliveryController);
+
+	// Filter Init
+	StandardFilterInit();
 }
 
 void DEApplication::End()

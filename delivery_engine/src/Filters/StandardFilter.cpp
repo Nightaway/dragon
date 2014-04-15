@@ -1,4 +1,4 @@
-#include "../Filter.h"
+#include "Filter.h"
 
 #include "../../config.h"
 #include "../IPLocator.h"
@@ -139,7 +139,7 @@ bool StandardFilter(AdInfo *adInfo, Information &infos)
 {
 	StandardInfo standardInfo;
 	BuildStandardInfo(standardInfo, infos);
-	return true;
+	return false;
 }
 
 bool StandardFilterInit()
@@ -157,7 +157,7 @@ bool StandardFilterInit()
 	}
 
 	// 加载IP库
-	ipLocator.open(DE_APP_PATH "data/ipLib.data");
+	ipLocator.open(DE_APP_PATH "/data/ipLib.data");
 
 	// check function map
 	//int len = sizeof(check_func_map) /  sizeof(check_func_map[0]);

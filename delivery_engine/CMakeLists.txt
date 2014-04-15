@@ -28,12 +28,14 @@ set(model_header_list
 	src/Models/AdInfo.h
 	src/Models/ZoneInfo.h
 	src/Models/VisitorInfo.h
+	src/Models/CampaignInfo.h
 )
 
 set(model_src_list
 	src/Models/AdInfo.cpp
 	src/Models/ZoneInfo.cpp
 	src/Models/VisitorInfo.cpp
+	src/Models/CampaignInfo.cpp
 )
 
 set(util_header_list
@@ -41,21 +43,23 @@ set(util_header_list
 	src/Utility/Filter.h
 	src/Utility/IPLocator.h
 	src/Utility/RedisContext.h
+	src/Utility/Select.h
 )
 
 set(util_src_list
 	src/Utility/DataModel.cpp
-	src/Utility/Filter.cpp
 	src/Utility/IPLocator.cpp
 	src/Utility/RedisContext.cpp
+	src/Utility/Select.cpp
 )
 
 set(filter_src_list
-	src/Utility/Filters/VisitorFilter.cpp
-	src/Utility/Filters/StandardFilter.cpp
-	src/Utility/Filters/CookieRedirect.cpp
-	src/Utility/Filters/MotuFilter.cpp
-	src/Utility/Filters/ContentFilter.cpp
+	src/Filters/Filter.cpp
+	src/Filters/VisitorFilter.cpp
+	src/Filters/StandardFilter.cpp
+	src/Filters/CookieRedirect.cpp
+	src/Filters/MotuFilter.cpp
+	src/Filters/ContentFilter.cpp
 )
 
 set(src_list
@@ -76,5 +80,6 @@ install(TARGETS DE DESTINATION lib)
 install(DIRECTORY logs DESTINATION DE)
 install(DIRECTORY scripts DESTINATION DE)
 install(FILES App.conf       DESTINATION DE/conf)
+install(FILES ipLib.data       DESTINATION DE/data)
 install(FILES ${app_header_list}        DESTINATION include/DE/)
 install(FILES ${controller_header_list} DESTINATION include/DE/Controllers)

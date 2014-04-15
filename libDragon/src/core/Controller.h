@@ -5,6 +5,7 @@
 #include "RuntimeInfo.h"
 #include "../http/HttpRequest.h"
 #include "../http/HttpResponse.h"
+#include "modules/Config.h"
 
 NS_DRAGON
 
@@ -18,7 +19,8 @@ protected:
 protected:
 	HttpRequest  *request;
 	HttpResponse *response;
-        Application  *app;
+	Config       *config;
+    Application  *app;
 	
 public:
 	Controller() : request(NULL), response(NULL) {}
@@ -34,10 +36,10 @@ public:
 	  response = res;
 	}
 
-        void SetApplication(Application *application)
-        {
+    void SetApplication(Application *application)
+    {
           app = application;
-        }
+    }
         
 	virtual ActionTable *GetActionTable();
 };

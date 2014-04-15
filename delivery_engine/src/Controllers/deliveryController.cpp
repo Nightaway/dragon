@@ -4,10 +4,13 @@
 
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/scoped_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include "../config.h"
 #include "../Utility/DataModel.h"
-#include "../Utility/Filter.h"
+#include "../Utility/Select.h"
+#include "../Filters/Filter.h"
 
 NS_USING_DRAGON
 NS_USING_BOOST
@@ -35,7 +38,7 @@ void deliveryController::ad(QueryString &qs)
   NamedSemiSpace space(SHARED_MEM_OBJ_NAME, SHARED_MEM_OBJ_SIZE);
   space.Open();
 
-  ZoneInfo *zoneInfo = GetZoneInfoById(zoneid, space);
+  boost::scoped_ptr<ZoneInfo> zoneInfo(GetZoneInfoById(zoneid, space));
   if (zoneInfo == NULL) {
     error.LogFmt("ZoneInfo by id [%d], not found in Shared Memory Object named [%s] size[%d]", 
                   zoneid, SHARED_MEM_OBJ_NAME, SHARED_MEM_OBJ_SIZE);
@@ -64,6 +67,9 @@ void deliveryController::ad(QueryString &qs)
     &qs,
   };
   filter(adInfos, info, VisitorFilter);
+  filter(adInfos, info, StandardFilter);
+
+  AdInfo *adInfo = SelectOne(adInfos);
 
   BOOST_FOREACH(AdInfo *ad, adInfos)
   {

@@ -126,7 +126,7 @@ bool HttpProcess::ProcessByJavaScript(RoutingTable &routingTable,
 
 bool HttpProcess::ProcessByCXX(RoutingTable &routingTable,
                                Application  &app,
-	                       HttpRequest  &req, 
+	                           HttpRequest  &req, 
                                HttpResponse &res)
 {
 	Controller *pCtrl;
@@ -144,7 +144,7 @@ bool HttpProcess::ProcessByCXX(RoutingTable &routingTable,
 				{
 					pCtrl->SetHttpRequest(&req);
 					pCtrl->SetHttpResponse(&res);
-                                        pCtrl->SetApplication(&app);
+                    pCtrl->SetApplication(&app);
 
 					//std::cout << "actionTable->actName:" << actionTable->actName << std::endl;
 					Action action = actionTable->action;

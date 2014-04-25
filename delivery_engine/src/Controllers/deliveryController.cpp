@@ -56,7 +56,7 @@ void deliveryController::ad(QueryString &qs)
     if (adInfo == NULL)
       continue;
 
-    printf("ad id:%d, instance:%s\n", adInfo->banner_id, adInfo->template_string.c_str());
+    printf("ad id:%d, weight:%d,instance:%s\n", adInfo->banner_id, adInfo->campaign_weight,adInfo->template_string.c_str());
     
     adInfos.push_back(adInfo);
   }
@@ -70,6 +70,13 @@ void deliveryController::ad(QueryString &qs)
   filter(adInfos, info, StandardFilter);
 
   AdInfo *adInfo = SelectOne(adInfos);
+
+  if (adInfo == NULL) {
+    std::string out = "no ad selected";
+    response->StringResult(out);
+    space.Close();
+    return ;
+  }
 
   BOOST_FOREACH(AdInfo *ad, adInfos)
   {

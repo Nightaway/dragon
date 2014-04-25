@@ -17,8 +17,8 @@ public:
 
 public:
 	int banner_id;
-        int placement_id;
-        int status;
+    int placement_id;
+    int status;
 	int width;
 	std::string ext_banner_type;
 	int height;
@@ -29,7 +29,7 @@ public:
 	int block_ad;
 	int cap_ad;
 	int session_cap_ad;
-        std::string compiledlimition;
+    std::string compiledlimition;
 	std::string acl_plugin;
 	std::string alt_filename;
 	double priority;
@@ -38,19 +38,19 @@ public:
 	int campaign_id;
 	int campaign_priority;
 	int campaign_weight;
-        int campaign_companion;
-        int block_campaign;
+    int campaign_companion;
+    int block_campaign;
 	int cap_campaign;
 	int session_cap_campaign;
 	int show_capped_no_cookie;
 	int client_id;
-        std::string expire_time;
+    std::string expire_time;
 	int revenue_type;
 	int ecpm_enabled;
 	int ecpm;
 	int tracker_status;
 	int ord_id;
-        std::string template_string;
+    std::string template_string;
 };
 
 #endif

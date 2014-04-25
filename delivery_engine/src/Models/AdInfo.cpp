@@ -25,6 +25,7 @@ void AdInfo::Dump(Space &space)
   space.Put(to_be_delivered);
   space.Put(campaign_id);
   space.Put(campaign_priority);
+  space.Put(campaign_weight);
   space.Put(campaign_companion);
   space.Put(block_campaign);
   space.Put(cap_campaign);
@@ -63,6 +64,7 @@ void AdInfo::Stuff(Space &space)
   space.Get(to_be_delivered);
   space.Get(campaign_id);
   space.Get(campaign_priority);
+  space.Get(campaign_weight);
   space.Get(campaign_companion);
   space.Get(block_campaign);
   space.Get(cap_campaign);

@@ -27,8 +27,10 @@ public:
 typedef boost::shared_ptr<WeightedCampaign> ExclusiveCampaignPtr;
 typedef boost::shared_ptr<WeightedCampaign> RemnantCampaignPtr;
 typedef boost::shared_ptr<PrioritizedCampaign> ContractCampaignPtr;
+typedef std::pair<int, ExclusiveCampaignPtr> ExclusiveCampaignsPair; 
 typedef std::map<int , ExclusiveCampaignPtr> ExclusiveCampaigns;
 typedef boost::array<ContractCampaignPtr, 10> ContractCampaigns;
+typedef std::pair<int, RemnantCampaignPtr> RemnantCampaignsPair; 
 typedef std::map<int , RemnantCampaignPtr> RemnantCampaigns;
 
 

@@ -48,9 +48,14 @@ public:
         }
 
         Log &GetInfoLog()
-          {
+        {
             return logInfo_;
-          }
+        }
+
+        Config &GetConfig()
+        {
+            return config_;
+        }
         
 };
 

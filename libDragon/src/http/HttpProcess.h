@@ -22,6 +22,7 @@ NS_DRAGON
                                          Application  &app,
 					 HttpRequest  &req, 
                                          HttpResponse &res);
+
 		bool ProcessByCXX(RoutingTable &routingTable,
                                   Application &app,
 				  HttpRequest  &req, 

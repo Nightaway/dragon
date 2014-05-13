@@ -13,6 +13,7 @@ public:
 	void ad(dragon::QueryString &qs);
 	void lg(dragon::QueryString &qs);
 	void ck(dragon::QueryString &qs);
+	void test(dragon::QueryString &qs);
 };
 
 #endif

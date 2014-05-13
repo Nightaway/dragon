@@ -20,7 +20,7 @@ protected:
 	HttpRequest  *request;
 	HttpResponse *response;
 	Config       *config;
-    Application  *app;
+        Application  *app;
 	
 public:
 	Controller() : request(NULL), response(NULL) {}
@@ -34,6 +34,11 @@ public:
 	void SetHttpResponse(HttpResponse *res)
 	{
 	  response = res;
+	}
+
+	void SetConfig(Config *conf)
+	{
+	  config = conf;
 	}
 
     void SetApplication(Application *application)

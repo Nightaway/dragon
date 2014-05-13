@@ -46,7 +46,7 @@ void HttpProcess::Process(RoutingTable &routingTable,
 	     		  HttpRequest  &req, 
             		  HttpResponse &res)
 {
-  if (ProcessByJavaScript(routingTable, app, req, res))
+	if (ProcessByJavaScript(routingTable, app, req, res))
 	{
 		std::cout << "Process By JS" << std::endl;
 		return ;
@@ -126,7 +126,7 @@ bool HttpProcess::ProcessByJavaScript(RoutingTable &routingTable,
 
 bool HttpProcess::ProcessByCXX(RoutingTable &routingTable,
                                Application  &app,
-	                           HttpRequest  &req, 
+	                       HttpRequest  &req, 
                                HttpResponse &res)
 {
 	Controller *pCtrl;
@@ -144,13 +144,15 @@ bool HttpProcess::ProcessByCXX(RoutingTable &routingTable,
 				{
 					pCtrl->SetHttpRequest(&req);
 					pCtrl->SetHttpResponse(&res);
-                    pCtrl->SetApplication(&app);
-
+					pCtrl->SetConfig(&app.GetConfig());
+                    			pCtrl->SetApplication(&app);
+	
 					//std::cout << "actionTable->actName:" << actionTable->actName << std::endl;
 					Action action = actionTable->action;
 					const char *seperator = actionTable->separator;
 					parse(routingTable.QueryString, qs, seperator);
 					qs["raw_qs"] = routingTable.QueryString;
+
 					std::cout << "seperator:" << seperator << std::endl;
 					(pCtrl->*action)(qs);
 					

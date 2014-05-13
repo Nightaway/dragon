@@ -55,6 +55,8 @@ sql::ResultSet *GetBannerResultSet(sql::Connection *conn,
   return rsAds;
 }
 
+
+NamedSemiSpace space(SHARED_MEM_OBJ_NAME, SHARED_MEM_OBJ_SIZE);
 void CacheTask::Run(dragon::Cycle &c)
 {
   std::cout << "Task Run at " << c.path << std::endl;
@@ -67,9 +69,12 @@ void CacheTask::Run(dragon::Cycle &c)
                                          c.config["mysql"]["db"].c_str());
 
   GetAllZoneId(conn, zoneids);
-  NamedSemiSpace space(SHARED_MEM_OBJ_NAME, SHARED_MEM_OBJ_SIZE);
-  space.Create();
 
+  if (!space.IsCreated())
+	space.Create();
+   else
+        space.Open();
+  space.Switch();
   OffsetTable zoneTable(1000, space);
   OffsetTable adTable(1000, space);
   BOOST_FOREACH(int zoneid, zoneids)

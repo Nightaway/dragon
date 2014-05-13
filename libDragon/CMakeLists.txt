@@ -26,6 +26,7 @@ set(core_header_list
 	src/core/StringRef.h
 	src/core/QueryString.h
 	src/core/JSCompiler.h
+	src/core/View.h
 )
 
 set(core_module_header_list 
@@ -49,6 +50,7 @@ set(core_src_list
 	src/core/StringRef.cpp
 	src/core/QueryString.cpp
 	src/core/JSCompiler.cpp
+	src/core/View.cpp
 )
 
 set(core_module_src_list 

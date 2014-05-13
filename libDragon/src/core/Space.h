@@ -111,22 +111,27 @@ public:
 		return head_addr_;
 	}
 
+        bool IsHeadUsed()
+        {
+          return *is_head_used;
+        }
+
 	void Switch()
 	{
-		if (is_head_used) {
+		if (*is_head_used) {
 			addr_ = half_addr_;	
-			is_head_used = false;
+			*is_head_used = false;
 			pos_ = 0;
 		}
 		else {
 			addr_ = head_addr_;
-			is_head_used = true;
+			*is_head_used = true;
 			pos_ = 0;
 		}
 	}
 
 protected:
-	bool is_head_used;
+	bool *is_head_used;
 	void *head_addr_;
 	void *half_addr_;
 };
@@ -146,10 +151,13 @@ public:
 	void Open();
 	void Close();
 	void Destroy();
+	
+	bool IsCreated() { return isCreated_; }
 
 protected:
 	const char *name_;
 	int fd_;
+	bool isCreated_;
 };
 
 NS_END

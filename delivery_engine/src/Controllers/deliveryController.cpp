@@ -1,6 +1,7 @@
 #include "deliveryController.h"
 
 #include <utility/DateTime.h>
+#include <core/View.h>
 
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
@@ -21,7 +22,17 @@ BEGIN_ACTION_MAP(deliveryController)
 	ACTION(deliveryController, ad)
 	ACTION(deliveryController, lg)
 	ACTION_OP1(deliveryController, ck, "__")
+	ACTION(deliveryController, test)
 END_ACTION_MAP()
+
+void deliveryController::test(QueryString &qs)
+{
+  NamedSemiSpace space(SHARED_MEM_OBJ_NAME, SHARED_MEM_OBJ_SIZE);
+  space.Open();
+  bool isHeadUsed = space.IsHeadUsed();
+
+  response->StringResult("test " + boost::lexical_cast<std::string>(isHeadUsed));
+}
 
 void deliveryController::ad(QueryString &qs)
 {
@@ -78,7 +89,7 @@ void deliveryController::ad(QueryString &qs)
     return ;
   }
 
-  BOOST_FOREACH(AdInfo *ad, adInfos)
+  /*BOOST_FOREACH(AdInfo *ad, adInfos)
   {
     std::string out = "banenr_id=";
     out += boost::lexical_cast<std::string>(ad->banner_id);
@@ -90,6 +101,20 @@ void deliveryController::ad(QueryString &qs)
   std::string out = "zoneid=";
   out += qs["zoneid"];
   response->StringResult(out);
+  space.Close();*/
+
+  int rnd = std::rand();
+  View v("__db");
+  v.DataBind(qs);
+  v.DataBind(*config);
+
+  ViewBag &bag = v.getViewBag();
+  bag["rnd"] = boost::lexical_cast<std::string>(rnd);
+  bag["cb"] =   bag["rnd"];
+
+  ViewEngine ve;
+  std::string result = ve.Out(v, adInfo->template_string);
+  response->StringResult(result);
   space.Close();
   return ;
 }

@@ -25,6 +25,8 @@ BEGIN_ACTION_MAP(deliveryController)
 	ACTION(deliveryController, test)
 END_ACTION_MAP()
 
+extern unsigned char gif_buf[43];
+
 void deliveryController::test(QueryString &qs)
 {
   NamedSemiSpace space(SHARED_MEM_OBJ_NAME, SHARED_MEM_OBJ_SIZE);
@@ -32,6 +34,7 @@ void deliveryController::test(QueryString &qs)
   bool isHeadUsed = space.IsHeadUsed();
 
   response->StringResult("test " + boost::lexical_cast<std::string>(isHeadUsed));
+  space.Close();
 }
 
 void deliveryController::ad(QueryString &qs)
@@ -89,20 +92,6 @@ void deliveryController::ad(QueryString &qs)
     return ;
   }
 
-  /*BOOST_FOREACH(AdInfo *ad, adInfos)
-  {
-    std::string out = "banenr_id=";
-    out += boost::lexical_cast<std::string>(ad->banner_id);
-    response->StringResult(out);
-    space.Close();
-    return ;
-  }
-
-  std::string out = "zoneid=";
-  out += qs["zoneid"];
-  response->StringResult(out);
-  space.Close();*/
-
   int rnd = std::rand();
   View v("__db");
   v.DataBind(qs);
@@ -132,7 +121,7 @@ void deliveryController::lg(QueryString &qs)
   } catch (boost::bad_lexical_cast) {
     error.LogFmt("lg action cast error: zoneid [%s], bannerid [%s], campaignid [%s]", 
           qs["zoneid"].c_str(), qs["bannerid"].c_str(), qs["campaignid"].c_str());
-    response->StringResult(" ");
+    response->DataRefResult(DataRef(gif_buf, 43));
     return ;
   }
 
@@ -144,10 +133,18 @@ void deliveryController::lg(QueryString &qs)
   std::string impb = "impb[" +  qs["bannerid"] + "]";
   response->setCookie(impb, "1", DateTime::YearFromNow(1), "/");
 
-  response->StringResult("lg action");
+  response->DataRefResult(DataRef(gif_buf, 43));
+  return ;
 }
 
 void deliveryController::ck(QueryString &qs)
 {
   response->StringResult("ck action");
 }
+
+unsigned char gif_buf[43] = { 0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x01, 0x00, 
+			      0x01, 0x00, 0x80, 0x00, 0x00, 0xff, 0xff, 0xff, 
+			      0x00, 0x00, 0x00, 0x21, 0xf9, 0x04, 0x00, 0x00, 
+			      0x00, 0x00, 0x00, 0x2c, 0x00, 0x00, 0x00, 0x00, 
+			      0x01, 0x00, 0x01, 0x00, 0x00, 0x02, 0x02, 0x44, 
+			      0x01, 0x00, 0x3b };

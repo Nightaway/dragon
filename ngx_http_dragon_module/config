@@ -1,0 +1,25 @@
+ngx_feature=
+ngx_feature_name=
+ngx_feature_run=no
+ngx_feature_incs=
+ngx_feature_path=
+ngx_feature_libs=
+ngx_feature_test=
+ngx_cc=g++
+have=NGX_HTTP_HEADERS . auto/have
+. auto/feature
+
+if [ $ngx_found = yes ]; then
+
+ngx_addon_name=ngx_http_dragon_module
+HTTP_MODULES="$HTTP_MODULES ngx_http_dragon_module"
+NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/ngx_http_dragon_module.cpp"
+CORE_LIBS="$CORE_LIBS -lstdc++ -lDragon -lDE -lpthread -lboost_system -lboost_filesystem -lboost_thread -lboost_date_time -lv8 -lrt -lm" 
+
+else
+    cat << END
+$0: error: unable to configure the ngx_http_accept_language_module.
+END
+    exit 1
+fi
+

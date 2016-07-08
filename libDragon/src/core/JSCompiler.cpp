@@ -93,11 +93,11 @@ void JavaScriptCompiler::Load(const std::string &AppPath, const std::string &pre
         filesystem::directory_iterator end_itr;
         for (filesystem::directory_iterator itr(ctrolsPath); itr != end_itr; ++itr)
         {
-                if (itr->path().extension() == ".js")
+                if (itr->path().extension().string() == ".js")
                 {
                        JavaScriptSource *jss = new JavaScriptSource();
-                       jss->path_         = path + itr->path().filename();
-                       jss->id_           = filesystem::change_extension(itr->path().filename(), "").string();
+                       jss->path_         = path + itr->path().filename().string();
+                       jss->id_           = filesystem::change_extension(itr->path().filename().string(), "").string();
                        jss->lastModified_ = last_write_time(itr->path());
                        jss->ctx_.Reset(GetIsolate(), Context::New(GetIsolate()));
 			

@@ -8,7 +8,6 @@ include_directories(../v8/include)
 
 set (src_header
 	 src/config.h
-	 src/sql.h.inc
 	 src/maintenance_cache_engine.h
 	 src/cache_task.h
 )
@@ -24,7 +23,7 @@ configure_file (
 )
 
 add_executable(BudgetControll ${src_list})
-target_link_libraries(BudgetControll Dragon DE rt bz2 pthread  boost_system boost_filesystem boost_date_time boost_regex v8_base.x64.a v8_snapshot.a)
+target_link_libraries(BudgetControll Dragon DE rt pthread  boost_system boost_filesystem boost_date_time boost_regex v8)
 install(TARGETS BudgetControll DESTINATION BudgetControll/sbin)
 install(DIRECTORY logs DESTINATION BudgetControll)
 install(DIRECTORY scripts DESTINATION BudgetControll)

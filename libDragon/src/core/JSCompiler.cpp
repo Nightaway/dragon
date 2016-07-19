@@ -91,10 +91,10 @@ void JavaScriptCompiler::Load(const std::string &AppPath, const std::string &pre
         filesystem::directory_iterator end_itr;
         for (filesystem::directory_iterator itr(ctrolsPath); itr != end_itr; ++itr)
         {
-                if (itr->path().extension().string() == ".js")
+                if (itr->path().extension() == ".js")
                 {
                        JavaScriptSource *jss = new JavaScriptSource();
-                       jss->path_         = path + itr->path().filename().string();
+                       jss->path_         = path + itr->path().filename();
                        jss->id_           = filesystem::change_extension(itr->path().filename(), "").string();
                        jss->lastModified_ = last_write_time(itr->path());
                        jss->ctx_.Reset(GetIsolate(), Context::New(GetIsolate()));
@@ -103,16 +103,16 @@ void JavaScriptCompiler::Load(const std::string &AppPath, const std::string &pre
 
                        Handle<Context> ctx = Local<Context>::New(isolate_, jss->ctx_);
 			
-		       Context::Scope scope_ctx(ctx);
-		       BOOST_FOREACH(ModulePair_t p, modules_)
-		       {
-     				Handle<Object> Obj = p.second->Wrap();
-		     	        ctx->Global()->Set(String::New(p.first.c_str()), Obj);
-		       }
+		                   Context::Scope scope_ctx(ctx);
+		                   BOOST_FOREACH(ModulePair_t p, modules_)
+		                   {
+     				             Handle<Object> Obj = p.second->Wrap();
+		     	               ctx->Global()->Set(String::New(p.first.c_str()), Obj);
+		                   }
 		  
                        if (ExecuteScript(source).IsEmpty()) {
-                               fprintf(stderr, "error in %s", jss->path_.c_str());
-			       _exit(1);
+                            fprintf(stderr, "error in %s", jss->path_.c_str());
+			                      _exit(1);
                        }
                        sources_[jss->id_] = jss;
                 }
@@ -122,19 +122,19 @@ void JavaScriptCompiler::Load(const std::string &AppPath, const std::string &pre
 Handle<Value> JavaScriptCompiler::ExecuteScript(Handle<String> source)
 {
 	HandleScope scope(isolate_);
-        TryCatch try_catch;
-        Local<Script> script = Script::Compile(source);
-        if (script.IsEmpty()) {
- 	    ReportException(isolate_, &try_catch);
-            return Handle<Value>();
-         }
+  TryCatch try_catch;
+  Local<Script> script = Script::Compile(source);
+  if (script.IsEmpty()) {
+ 	  ReportException(isolate_, &try_catch);
+    return Handle<Value>();
+  }
 
-         Local<Value> result = script->Run();
-         if (result.IsEmpty()) {
-	     ReportException(isolate_, &try_catch);
-             return Handle<Value>();
-         }
-         return scope.Close(result);;
+  Local<Value> result = script->Run();
+  if (result.IsEmpty()) {
+	  ReportException(isolate_, &try_catch);
+    return Handle<Value>();
+  }
+  return scope.Close(result);;
 }
 
 void ReportException(v8::Isolate* isolate, v8::TryCatch* try_catch) {

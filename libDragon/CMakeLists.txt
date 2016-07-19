@@ -113,11 +113,11 @@ set(utilily_header_list
 )
 
 set(db_src_list 
-	src/db/MysqlContext.cpp
+	
 )
 
 set(db_header_list 
-	src/db/MysqlContext.h
+	
 )
 
 set(src_list

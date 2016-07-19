@@ -39,7 +39,7 @@ void *Space::Allocate(unsigned size)
 SemiSpace::SemiSpace() 
 		: is_head_used(NULL), 
 		  head_addr_(addr_), 
-                  half_addr_(NULL)
+    	half_addr_(NULL)
 {
 
 }
@@ -65,25 +65,25 @@ void NamedSemiSpace::Create()
     fd_ = shm_open(name_, O_CREAT|O_RDWR, S_IRUSR|S_IWUSR);
     char buff[255];
     if (fd_ == -1) {
-	sprintf(buff, "shm_open error : %s \n", strerror(errno));
-	throw std::runtime_error(std::string(buff, strlen(buff)));
+	    sprintf(buff, "shm_open error : %s \n", strerror(errno));
+	    throw std::runtime_error(std::string(buff, strlen(buff)));
     }
 
     if (ftruncate(fd_, size_) == -1) {
-        sprintf(buff, "ftruncate : %s \n", strerror(errno));
-	throw std::runtime_error(std::string(buff, strlen(buff)));
+      sprintf(buff, "ftruncate : %s \n", strerror(errno));
+	    throw std::runtime_error(std::string(buff, strlen(buff)));
     }
 
     addr_ = mmap(NULL, size_, PROT_READ | PROT_WRITE, MAP_SHARED, fd_, 0);
 
     if (close(fd_) == -1) {
-	sprintf(buff, "close : %s \n", strerror(errno));
-	throw std::runtime_error(std::string(buff, strlen(buff)));
+	    sprintf(buff, "close : %s \n", strerror(errno));
+	    throw std::runtime_error(std::string(buff, strlen(buff)));
     }
 
     if (addr_ == MAP_FAILED) {
-        sprintf(buff, "mmap : %s \n", strerror(errno));
-	throw std::runtime_error(std::string(buff, strlen(buff)));
+      sprintf(buff, "mmap : %s \n", strerror(errno));
+	    throw std::runtime_error(std::string(buff, strlen(buff)));
     }
     
     is_head_used  = (bool *)addr_;
@@ -119,16 +119,16 @@ void NamedSemiSpace::Open()
 		throw std::runtime_error(std::string(buff, strlen(buff)));
 	}
 
-    	is_head_used  = (bool *)addr_;
-    	half_addr_ = reinterpret_cast<char *>(addr_) + (size_ / 2) + sizeof(bool);
+    is_head_used  = (bool *)addr_;
+    half_addr_ = reinterpret_cast<char *>(addr_) + (size_ / 2) + sizeof(bool);
    	head_addr_ = addr_ + sizeof(bool);
    	pos_ = 0;
         
-        if (is_head_used) {
-		addr_ = half_addr_;
-        } else {
-		addr_ = head_addr_;
-        }
+    if (is_head_used) {
+		  addr_ = half_addr_;
+    } else {
+		  addr_ = head_addr_;
+    }
 }
 
 void NamedSemiSpace::Clear()

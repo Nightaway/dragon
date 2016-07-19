@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <DEApplication.h>
+#include <pbsApplication.h>
 
 using namespace dragon;
 
@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
 	req.SetUserCookie(StringRef(userCookie, strlen(userCookie)));
 	req.SetAcceptLanguage(StringRef(acceptLang, strlen(acceptLang)));
 
-	DEApplication app;
+	pbsApplication app;
 	try {
 	  app.Start();
 	  app.ResponseRequest(req, res);

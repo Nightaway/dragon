@@ -6,24 +6,22 @@ extern "C" {
 
 #ifdef CR
 #undef CR
-#include <DEApplication.h>
+#include <pbsApplication.h>
 #endif
 
-
-DEApplication DE;
+pbsApplication pbs;
 
 extern "C"
 ngx_int_t init_cxxmvc_module(ngx_cycle_t *cycle)
 {
-	DE.Start();
+	pbs.Start();
 	return 0;
 }
-
 
 extern "C"
 void uninit_cxxmvc_module(ngx_cycle_t *cycle)
 {
-	DE.End();
+	pbs.End();
 }
 
 /*
@@ -66,7 +64,6 @@ static ngx_command_t ngx_http_cxxmvc_commands[] = {
 	},
 	ngx_null_command
 };
-
 
 static ngx_http_module_t ngx_http_cxxmvc_module_ctx = {
 		NULL,
@@ -178,12 +175,12 @@ static ngx_int_t ngx_http_cxxmvc_handler(ngx_http_request_t *r)
 	req.SetUserAgent(userAgent);
 	req.SetUserCookie(StringRef(userCookie.c_str(), userCookie.length()));
 	req.SetAcceptLanguage(StringRef(lang.c_str(), lang.length()));
-        req.ParseCookie();
+  req.ParseCookie();
 
-	DE.ResponseRequest(req, res);
+	pbs.ResponseRequest(req, res);
 
 	ngx_str_t k = ngx_string("X-Powered-By");
-	ngx_str_t v = ngx_string("cxxmvc/0.1");;
+	ngx_str_t v = ngx_string("dragon/3.1");;
 	ngx_http_add_header(r, &v, &k);
 
 	if (res.GetResponseType() == kResponseTypeRedirect)
@@ -236,13 +233,13 @@ static ngx_int_t ngx_http_cxxmvc_handler(ngx_http_request_t *r)
 	}
 
 	r->headers_out.status             = res.GetStatusCode();
-    	r->headers_out.content_type.len   = res.GetContentType().length();
+  r->headers_out.content_type.len   = res.GetContentType().length();
 	r->headers_out.content_type.data  = (u_char *)res.GetContentType().c_str();
 
 	if (res.GetDetaRef().length() > 0)
 		r->headers_out.content_length_n = res.GetDetaRef().length();
-        else 
-       		r->headers_out.content_length_n = res.GetContent().length();
+  else 
+    r->headers_out.content_length_n = res.GetContent().length();
 
 
         ngx_http_send_header(r);
@@ -259,13 +256,13 @@ static ngx_int_t ngx_http_cxxmvc_handler(ngx_http_request_t *r)
 
 	if (res.GetDetaRef().length() > 0) {
 		buf->pos = (u_char *)res.GetDetaRef().data();
-       		buf->last = buf->pos + res.GetDetaRef().length();
+       	buf->last = buf->pos + res.GetDetaRef().length();
 	} else {
-       		buf->pos = (u_char *)res.GetContent().c_str();
-        	buf->last = buf->pos + res.GetContent().length();
+       	buf->pos = (u_char *)res.GetContent().c_str();
+        buf->last = buf->pos + res.GetContent().length();
 	}
-        buf->memory   = 1; /* content is in read-only memory */
-        buf->last_buf = 1; /* there will be no more buffers in the request */
+    buf->memory   = 1; /* content is in read-only memory */
+    buf->last_buf = 1; /* there will be no more buffers in the request */
 
 	out.buf    = buf;
 	out.next   = NULL;

@@ -16,12 +16,8 @@ struct RoutingTable {
 	std::string QueryString;
 };
 
-struct IUrlRouting {
-	virtual RoutingTable Route(std::string Url) = 0;
-};
-
 class UrlRouting : 
-               public JavaScriptModule, public IUrlRouting {
+               public JavaScriptModule {
 	JavaScriptSource *pSource_;
 
 public:
@@ -30,7 +26,7 @@ public:
 	virtual void Init();
 	virtual void Dispose();
 
-	virtual RoutingTable Route(std::string Url);
+	RoutingTable Route(std::string Url);
 };
 
 NS_END

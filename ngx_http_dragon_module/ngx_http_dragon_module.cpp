@@ -94,6 +94,58 @@ ngx_module_t ngx_http_dragon_module = {
 		 NGX_MODULE_V1_PADDING
 };
 
+static uint8_t* 
+get_raw_http_body( ngx_http_request_t* r, size_t* body_len )
+{
+    ngx_chain_t* bufs = r->request_body->bufs;
+    *body_len = 0;
+
+    ngx_buf_t* buf = NULL;
+    uint8_t* data_buf = NULL;
+    size_t content_length = 0;
+
+    if ( r->headers_in.content_length == NULL )
+    {
+        return NULL;
+    }
+
+    // malloc space for data_buf
+
+    content_length = atoi( (char*)(r->headers_in.content_length->value.data) );
+
+    data_buf = ( uint8_t* )ngx_palloc( r->pool , content_length + 1 );
+
+    size_t buf_length = 0;
+
+    while ( bufs )
+    {
+        buf = bufs->buf;
+
+        bufs = bufs->next;
+
+        buf_length = buf->last - buf->pos ;
+
+        if( *body_len + buf_length > content_length )
+        {
+
+            memcpy( data_buf + *body_len, buf->pos, content_length - *body_len );
+            *body_len = content_length ;
+
+            break;
+        }
+
+        memcpy( data_buf + *body_len, buf->pos, buf->last - buf->pos );
+        *body_len += buf->last - buf->pos;
+    }
+
+    if ( *body_len )
+    {
+        data_buf[*body_len] = '\0';
+    }
+
+    return data_buf;
+}
+
 static ngx_int_t
 ngx_http_add_header(ngx_http_request_t *r, ngx_str_t *value, ngx_str_t *key)
 {
@@ -132,10 +184,12 @@ ngx_http_add_cookie(ngx_http_request_t *r, ngx_str_t value)
 static std::string ngx_http_get_cookie(ngx_http_request_t *r);
 static std::string ngx_http_get_language(ngx_http_request_t *r);
 
-static ngx_int_t ngx_http_cxxmvc_handler(ngx_http_request_t *r)
+static void p2s_urlquery_process_handler(ngx_http_request_t *r)
 {
 	using dragon::kHttp_Method_Get;
+	using dragon::kHttp_Method_Post;
 	using dragon::kResponseTypeRedirect;
+	using dragon::Post;
 	using dragon::HeaderList;
 	using dragon::CookieList;
 	using dragon::StringRef;
@@ -144,6 +198,9 @@ static ngx_int_t ngx_http_cxxmvc_handler(ngx_http_request_t *r)
 
 	ngx_buf_t *buf = NULL;
 	ngx_chain_t out;
+
+	size_t bodylen = 0;
+  uint8_t* contents = get_raw_http_body(r, &bodylen);
 
 	unsigned uriLen = r->uri.len;
 	if (r->args.len > 0) 
@@ -168,7 +225,21 @@ static ngx_int_t ngx_http_cxxmvc_handler(ngx_http_request_t *r)
 	HttpRequest  req;
 	HttpResponse res;
 
-	req.SetMethod(kHttp_Method_Get);
+	switch (r->method) {
+ 		case NGX_HTTP_POST:
+		req.SetMethod(kHttp_Method_Post);
+		Post post;
+		post.data = contents;
+		post.len  = bodylen;
+		req.SetPost(post);
+		break;
+
+		case NGX_HTTP_GET:
+		req.SetMethod(kHttp_Method_Get);
+		break;
+	}
+
+	
 	req.SetUrl(routingUrl);
 	req.SetIp(IP);
 	//req.SetHost(StringRef(host, strlen(host)));
@@ -208,9 +279,6 @@ static ngx_int_t ngx_http_cxxmvc_handler(ngx_http_request_t *r)
 			v.len  = iter->second.length();
 			strcpy((char *)v.data, (const char *)iter->second.c_str());
 
-		//	std::cout << "key : "<< k.data << std::endl;
-		//	std::cout << "value : " << v.data << std::endl;
-
 			ngx_http_add_header(r, &v, &k);
 		}
 	}
@@ -241,33 +309,50 @@ static ngx_int_t ngx_http_cxxmvc_handler(ngx_http_request_t *r)
   else 
     r->headers_out.content_length_n = res.GetContent().length();
 
+  ngx_http_send_header(r);
 
-        ngx_http_send_header(r);
+  if (r->headers_out.status == 204) {
+		ngx_http_finalize_request(r, 0);
+		return ;
+	}
 
-        buf = (ngx_buf_t *)ngx_pcalloc(r->pool, sizeof(ngx_buf_t));
+  buf = (ngx_buf_t *)ngx_pcalloc(r->pool, sizeof(ngx_buf_t));
 
-        if (buf == NULL) {
-                ngx_log_error(NGX_LOG_ERR,
-                              r->connection->log,
-                              0,
-                              "Failed to allocate response buffer.");
-                return NGX_ERROR;
-        }
+  if (buf == NULL) {
+    ngx_log_error(NGX_LOG_ERR,
+                  r->connection->log,
+                  0,
+                  "Failed to allocate response buffer.");
+    ngx_http_finalize_request(r, NGX_HTTP_INTERNAL_SERVER_ERROR);
+    return ;
+  }
 
 	if (res.GetDetaRef().length() > 0) {
 		buf->pos = (u_char *)res.GetDetaRef().data();
-       	buf->last = buf->pos + res.GetDetaRef().length();
+    buf->last = buf->pos + res.GetDetaRef().length();
 	} else {
-       	buf->pos = (u_char *)res.GetContent().c_str();
-        buf->last = buf->pos + res.GetContent().length();
+    buf->pos = (u_char *)res.GetContent().c_str();
+    buf->last = buf->pos + res.GetContent().length();
 	}
-    buf->memory   = 1; /* content is in read-only memory */
-    buf->last_buf = 1; /* there will be no more buffers in the request */
+  buf->memory   = 1; /* content is in read-only memory */
+  buf->last_buf = 1; /* there will be no more buffers in the request */
 
 	out.buf    = buf;
 	out.next   = NULL;
 
-	return ngx_http_output_filter(r, &out);
+	ngx_http_output_filter(r, &out);
+	ngx_http_finalize_request(r, 0);
+}
+
+static ngx_int_t ngx_http_cxxmvc_handler(ngx_http_request_t *r)
+{
+	 ngx_int_t rc = NGX_DONE;
+    rc = ngx_http_read_client_request_body( r, p2s_urlquery_process_handler );
+    if (rc >= NGX_HTTP_SPECIAL_RESPONSE) {
+        return rc;
+    }
+
+  return NGX_DONE;
 }
 
 static char *ngx_http_cxxmvc_read_conf(ngx_conf_t *cf,

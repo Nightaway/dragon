@@ -15,6 +15,11 @@ typedef enum {
 	kHttp_Method_Delete
 } HttpMethod;
 
+typedef struct {
+	unsigned char *data;
+	unsigned len;
+} Post;
+
 typedef std::pair<std::string, std::string> CookiePair;
 typedef std::map<std::string, std::string> Cookie;
 
@@ -26,18 +31,18 @@ class HttpRequest {
 	StringRef UserAgent_;
 	StringRef UserCookie_;
 	StringRef AcceptLanguage_;
-	std::string RewritedUrl_;
 	Cookie cookies_;
+	Post post_;
 
 public:
 	HttpRequest();
 	HttpRequest(HttpMethod method, 
-		   StringRef  url,
-		   StringRef  ip,
-		   StringRef  host,
-		   StringRef  userAgent,
-		   StringRef  userCookie,
-	       StringRef  acceptLanguage);
+					   StringRef  url,
+					   StringRef  ip,
+					   StringRef  host,
+					   StringRef  userAgent,
+					   StringRef  userCookie,
+				     StringRef  acceptLanguage);
 	~HttpRequest();
 
 	void SetMethod(HttpMethod method)
@@ -110,19 +115,19 @@ public:
 		return AcceptLanguage_;
 	}
 
-	void SetRewritedUrl(std::string rewritedUrl)
-	{
-		RewritedUrl_ = rewritedUrl;
-	}
-
-	std::string GetRewritedUrl()
-	{
-		return RewritedUrl_;
-	}
-
 	Cookie &GetCookie()
 	{
 		return cookies_;
+	}
+
+	void SetPost(Post post)
+	{
+		post_ = post;
+	}
+
+	Post GetPost()
+	{
+		return post_;
 	}
 
 	void ParseCookie();

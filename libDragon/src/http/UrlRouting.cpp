@@ -41,8 +41,13 @@ void UrlRouting::Dispose()
 RoutingTable UrlRouting::Route(std::string Url)
 {
 	RoutingTable routingTable;
+	
+	// pSource_ = jsCompiler_.GetSource()["UrlRouting"];
 	if (pSource_ != NULL) {
+		// jsCompiler_.Load("/usr/local/DE", "/scripts");
+
 		HandleScope scope(jsCompiler_.GetIsolate());
+		jsCompiler_.Reload("UrlRouting");
 		Local<Context> ctx = Local<Context>::New(jsCompiler_.GetIsolate(), pSource_->ctx_);
 		Context::Scope context_scope(ctx);
 		Handle<Value> initFuncValue = ctx->Global()->Get(String::NewSymbol("Route"));

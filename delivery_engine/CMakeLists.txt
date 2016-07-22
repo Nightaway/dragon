@@ -15,10 +15,12 @@ set(app_src_list
 
 set(controller_header_list
 	src/Controllers/deliveryController.h
+	src/Controllers/sohuController.h
 )
 
 set(controller_src_list
 	src/Controllers/deliveryController.cpp
+	src/Controllers/sohuController.cc
 )
 
 set(src_list

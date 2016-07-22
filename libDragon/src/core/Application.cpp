@@ -5,9 +5,8 @@
 NS_USING_DRAGON
 NS_USING_V8
 
-
 Application::Application() 
-	:       urlRewriting_(jsCompiler_),
+	:     
 		urlRouting_(jsCompiler_),
 		httpProcess_(jsCompiler_),
 		logInfo_(jsCompiler_, kLogLevelInfo, "info"),
@@ -60,14 +59,12 @@ void Application::Start()
 	jsCompiler_.Load(appPath_, "/scripts");
 
 	// #6
-	urlRewriting_.Init();
 	urlRouting_.Init();
 	httpProcess_.Init();
 }
 
 void Application::End()
 {
-	urlRewriting_.Dispose();
 	urlRouting_.Dispose();
 	httpProcess_.Dispose();
 	console_.Dispose();
@@ -78,8 +75,6 @@ void Application::End()
 
 void Application::ResponseRequest(HttpRequest &req, HttpResponse &res)
 {
-	std::string rewritedUrl = urlRewriting_.Rewrite(req.GetUrl());
-	req.SetRewritedUrl(rewritedUrl);
-	RoutingTable table = urlRouting_.Route(rewritedUrl);
+	RoutingTable table = urlRouting_.Route(std::string(req.GetUrl().string(), req.GetUrl().length()));
 	httpProcess_.Process(table, *this, req, res);
 }

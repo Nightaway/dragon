@@ -60,7 +60,6 @@ set(core_module_src_list
 )
 
 set(http_header_list
-	src/http/UrlRewriting.h
 	src/http/UrlRouting.h
 	src/http/HttpRequest.h
 	src/http/HttpResponse.h
@@ -68,7 +67,6 @@ set(http_header_list
 )
 
 set(http_src_list
-	src/http/UrlRewriting.cpp
 	src/http/UrlRouting.cpp
 	src/http/HttpRequest.cpp
 	src/http/HttpResponse.cpp

@@ -9,6 +9,8 @@
 
 #include "modules/Console.h"
 
+#include <iostream>
+
 NS_USING_DRAGON
 NS_USING_V8
 NS_USING_BOOST
@@ -35,7 +37,7 @@ Handle<String> JavaScriptCompiler::LoadJavaScriptSource(const std::string &path,
 {
         const char *exports_start = "(function(exports) {";
         const char *exports_end  = "});";
-        HandleScope scope(isolate_);
+        HandleScope scope;
 
         FILE *file = fopen(path.c_str(), "rb");
         if (file == NULL) {
@@ -75,7 +77,7 @@ Handle<String> JavaScriptCompiler::LoadJavaScriptSource(const std::string &path,
                 buf -= strlen(exports_start);
         }
 
-        Handle<String> source = String::New( buf, total);
+        Handle<String> source = String::New(buf, total);
         delete [] buf;
         fclose(file);
 	
@@ -117,6 +119,24 @@ void JavaScriptCompiler::Load(const std::string &AppPath, const std::string &pre
                        sources_[jss->id_] = jss;
                 }
         }
+}
+
+void JavaScriptCompiler::Reload(const std::string &id)
+{
+  JavaScriptSource *jss = sources_[id];
+  filesystem::path js_path(jss->path_);
+  if (jss->lastModified_ !=  boost::filesystem::last_write_time(jss->path_)) {
+    jss->lastModified_ = boost::filesystem::last_write_time(jss->path_);
+      
+    Handle<String> source = LoadJavaScriptSource(jss->path_);
+    
+    Handle<Context> ctx = Local<Context>::New(isolate_, jss->ctx_);
+    Context::Scope scope_ctx(ctx);
+    if (ExecuteScript(source).IsEmpty()) {
+        fprintf(stderr, "Reload Script Error : %s", jss->path_.c_str());
+        exit(1);
+    }
+  }
 }
 
 Handle<Value> JavaScriptCompiler::ExecuteScript(Handle<String> source)

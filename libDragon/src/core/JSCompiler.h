@@ -32,7 +32,7 @@ NS_DRAGON
        class JavaScriptCompiler {
                 SourceMap sources_;
                 LibraryMap librarys_;
-		ModuleMap  modules_;
+		            ModuleMap  modules_;
 
                 v8::Isolate *isolate_;
                 v8::Handle<v8::String>  LoadJavaScriptSource(const std::string &path, bool isLib = false);
@@ -43,6 +43,7 @@ NS_DRAGON
                 ~JavaScriptCompiler() {}
 
                 void Load(const std::string &AppPath, const std::string &prefix);
+                void Reload(const std::string &id);
                 void LoadLibrary(const std::string &AppPath);
 
 		void AddModule(const std::string name, JavaScriptModule *);

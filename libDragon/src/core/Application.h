@@ -12,7 +12,6 @@
 
 #include "../http/HttpRequest.h"
 #include "../http/HttpResponse.h"
-#include "../http/UrlRewriting.h"
 #include "../http/UrlRouting.h"
 #include "../http/HttpProcess.h"
 
@@ -24,7 +23,6 @@ protected:
 	std::string appName_;
 
 	JavaScriptCompiler jsCompiler_;
-	UrlRewriting urlRewriting_;
 	UrlRouting urlRouting_;
 	HttpProcess httpProcess_;
 	Log logInfo_;
@@ -42,20 +40,20 @@ public:
 
 	void ResponseRequest(HttpRequest &req, HttpResponse &res);
         
-        Log &GetErrorLog()
-        {
-          return logError_;
-        }
+  Log &GetErrorLog()
+  {
+    return logError_;
+  }
 
-        Log &GetInfoLog()
-        {
-            return logInfo_;
-        }
+  Log &GetInfoLog()
+  {
+      return logInfo_;
+  }
 
-        Config &GetConfig()
-        {
-            return config_;
-        }
+  Config &GetConfig()
+  {
+      return config_;
+  }
         
 };
 

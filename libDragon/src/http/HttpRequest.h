@@ -22,6 +22,7 @@ typedef struct {
 
 typedef std::pair<std::string, std::string> CookiePair;
 typedef std::map<std::string, std::string> Cookie;
+typedef std::map<std::string, std::string> HeaderInList;
 
 class HttpRequest {
 	HttpMethod Method_;
@@ -33,6 +34,7 @@ class HttpRequest {
 	StringRef AcceptLanguage_;
 	Cookie cookies_;
 	Post post_;
+	HeaderInList Headers_;
 
 public:
 	HttpRequest();
@@ -131,6 +133,11 @@ public:
 	}
 
 	void ParseCookie();
+
+	HeaderInList &GetHeaders()
+	{
+		return Headers_;
+	}
 };
 
 

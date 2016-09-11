@@ -10,6 +10,9 @@ class pbsApplication :
 		virtual void Start();
 		virtual void End();
 		virtual void SetAppPath();
+
+	private:
+		
 };
 
 #endif

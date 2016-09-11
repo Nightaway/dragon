@@ -195,12 +195,13 @@ static void p2s_urlquery_process_handler(ngx_http_request_t *r)
 	using dragon::StringRef;
 	using dragon::HttpRequest;
 	using dragon::HttpResponse;
+	using dragon::HeaderInList;
 
 	ngx_buf_t *buf = NULL;
 	ngx_chain_t out;
 
 	size_t bodylen = 0;
-  uint8_t* contents = get_raw_http_body(r, &bodylen);
+  	uint8_t* contents = get_raw_http_body(r, &bodylen);
 
 	unsigned uriLen = r->uri.len;
 	if (r->args.len > 0) 
@@ -248,10 +249,30 @@ static void p2s_urlquery_process_handler(ngx_http_request_t *r)
 	req.SetAcceptLanguage(StringRef(lang.c_str(), lang.length()));
   req.ParseCookie();
 
+	HeaderInList & headers_in_ = req.GetHeaders();
+	ngx_http_headers_in_t headers_in = r->headers_in;
+	ngx_list_t headers_list = headers_in.headers;
+	ngx_list_part_t *part = &(headers_list.part);
+	while (part) {
+		for (int i=0; i<headers_list.nalloc-1; i++) {
+			ngx_table_elt_t  *str = (ngx_table_elt_t  *)part->elts;
+			if (str[i].hash == 0)
+				continue;
+			if (str[i].key.len > 0 && str[i].value.len > 0)	{
+				std::string key((const char *)str[i].key.data, str[i].key.len);
+				std::string value((const char *)str[i].value.data, str[i].value.len);
+				headers_in_[key] = value;
+				printf("key: %s value:%s\n", str[i].key.data, str[i].value.data);
+			}
+		}
+		
+		part = part->next;
+	}
+
 	pbs.ResponseRequest(req, res);
 
 	ngx_str_t k = ngx_string("X-Powered-By");
-	ngx_str_t v = ngx_string("dragon/3.1");;
+	ngx_str_t v = ngx_string("dragon/3.2");;
 	ngx_http_add_header(r, &v, &k);
 
 	if (res.GetResponseType() == kResponseTypeRedirect)

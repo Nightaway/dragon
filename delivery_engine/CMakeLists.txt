@@ -2,8 +2,13 @@ project(delivery_engine)
 
 cmake_minimum_required(VERSION 2.6)
 
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
 include_directories(../libDragon/src)
 include_directories(../v8/include)
+
+find_package(aws-sdk-cpp)
+add_definitions(-DUSE_IMPORT_EXPORT)
 
 set(app_header_list 
 	src/pbsApplication.h

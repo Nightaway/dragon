@@ -1,4 +1,4 @@
-#include "deliveryController.h"
+#include "collectionController.h"
 
 #include <aws/core/Aws.h>
 #include <aws/sqs/SQSClient.h>
@@ -10,18 +10,19 @@
 #include <boost/shared_ptr.hpp>
 
 #include "../config.h"
+#include "../Utility/rapidjson/document.h"
 
 NS_USING_DRAGON
 NS_USING_BOOST
 
-IMPLEMENT_CONTROLLER(Controller, deliveryController)
+IMPLEMENT_CONTROLLER(Controller, collectionController)
 
-BEGIN_ACTION_MAP(deliveryController)
-	ACTION_OP1(deliveryController, ck, "__")
-	ACTION(deliveryController, test)
+BEGIN_ACTION_MAP(collectionController)
+	ACTION(collectionController, upload)
+	ACTION(collectionController, test)
 END_ACTION_MAP()
 
-void deliveryController::test(QueryString &qs)
+void collectionController::test(QueryString &qs)
 {
 	NamedSemiSpace space(SHARED_MEM_OBJ_NAME, SHARED_MEM_OBJ_SIZE);
 	space.Open();
@@ -31,7 +32,7 @@ void deliveryController::test(QueryString &qs)
 	space.Close();
 }
 
-void deliveryController::ck(QueryString &qs)
+void collectionController::upload(QueryString &qs)
 {
 	static bool init = false;
 	static Aws::Client::ClientConfiguration config;
@@ -47,20 +48,24 @@ void deliveryController::ck(QueryString &qs)
 	static Aws::SQS::SQSClient sqsClient{config};
 	static std::string queueUrl{"https://sqs.ap-northeast-1.amazonaws.com/631794131827/test"};
 
-	if (request->GetMethod() == kHttp_Method_Post && request->GetPost().len > 0) {
+	if (request->GetMethod() == kHttp_Method_Post && request->GetPost().data != NULL && request->GetPost().len > 0) {
 		Log &log = app->GetErrorLog();
+		unsigned char *data = request->GetPost().data;
+
+		rapidjson::Document d;
+		d.Parse((const char *)data);
+
 		std::string json{"{\"1\" : 1}"};
 
 		Aws::SQS::Model::SendMessageRequest sendMessageRequest1;
 		sendMessageRequest1.SetQueueUrl(queueUrl.c_str());
 		sendMessageRequest1.SetMessageBody(json.c_str());
 		Aws::SQS::Model::SendMessageOutcome sendMessageOutcome = sqsClient.SendMessage(sendMessageRequest1);
-		if(!sendMessageOutcome.IsSuccess() || sendMessageOutcome.GetResult().GetMessageId().length() == 0) {
+		if (!sendMessageOutcome.IsSuccess() || sendMessageOutcome.GetResult().GetMessageId().length() == 0) {
 			std::stringstream ss;
 			ss << "Erron on send:" << sendMessageOutcome.GetError().GetMessage();
 			log.LogMsg(ss.str());
 		}
-		log.LogMsg("11");
 		response->StringResult("Post");
 		return ;
 	}

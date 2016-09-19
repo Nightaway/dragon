@@ -262,7 +262,7 @@ static void p2s_urlquery_process_handler(ngx_http_request_t *r)
 				std::string key((const char *)str[i].key.data, str[i].key.len);
 				std::string value((const char *)str[i].value.data, str[i].value.len);
 				headers_in_[key] = value;
-				printf("key: %s value:%s\n", str[i].key.data, str[i].value.data);
+				//printf("key: %s value:%s\n", str[i].key.data, str[i].value.data);
 			}
 		}
 		

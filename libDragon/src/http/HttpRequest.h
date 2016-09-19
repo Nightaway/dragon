@@ -39,12 +39,12 @@ class HttpRequest {
 public:
 	HttpRequest();
 	HttpRequest(HttpMethod method, 
-					   StringRef  url,
-					   StringRef  ip,
-					   StringRef  host,
-					   StringRef  userAgent,
-					   StringRef  userCookie,
-				     StringRef  acceptLanguage);
+		StringRef  url,
+		StringRef  ip,
+		StringRef  host,
+		StringRef  userAgent,
+		StringRef  userCookie,
+		StringRef  acceptLanguage);
 	~HttpRequest();
 
 	void SetMethod(HttpMethod method)

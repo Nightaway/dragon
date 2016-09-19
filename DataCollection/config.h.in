@@ -1,7 +1,7 @@
 #ifndef __DE_CONFIG_H__
 #define __DE_CONFIG_H__
 
-#define DE_APP_PATH "/usr/local/DE"
+#define DE_APP_PATH "${CMAKE_INSTALL_PREFIX}/DataCollection"
 
 #define SHARED_MEM_OBJ_NAME "DE_CACHE_DATA"
 

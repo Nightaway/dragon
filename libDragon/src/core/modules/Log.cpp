@@ -164,6 +164,7 @@ void Log::LogMsg(std::string msg)
 	ss << getppid() << ITEM_SEPERATOR << TimeString() << ITEM_SEPERATOR << msg << std::endl;
 	std::string str = ss.str();
 	fwrite(str.c_str(), str.length(), 1, file_);
+	fflush(file_);
 }
 
 void Log::LogFmt(const char *fmt, ...)

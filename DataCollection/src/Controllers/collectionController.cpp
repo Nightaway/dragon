@@ -14,7 +14,7 @@
 
 NS_USING_DRAGON
 
-IMPLEMENT_CONTROLLER(Controller, collectionController)
+IMPLEMENT_CONTROLLER(collectionController)
 
 BEGIN_ACTION_MAP(collectionController)
 	ACTION(collectionController, upload)

@@ -3,7 +3,7 @@
 NS_USING_DRAGON
 
 ClassTable *Controller::lastClassTable_ = &clsTable_;
-ClassTable Controller::clsTable_ = {&clsTable_, NULL, NULL, &clsInfo_};
+ClassTable Controller::clsTable_ = {&clsTable_, NULL, &clsInfo_};
 ClassInfo  Controller::clsInfo_  = {"Controller", Controller::Create_};
 Controller *Controller::Create_()		          
 {							  

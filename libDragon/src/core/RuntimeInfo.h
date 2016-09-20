@@ -17,8 +17,8 @@ public:                                              \
 	static dragon::ClassInfo  *GetClassInfo_();   \
 	static dragon::ClassTable *GetClassTable_();
 
-#define IMPLEMENT_CONTROLLER(parent, cls_name)  \
-	dragon::ClassTable cls_name::clsTable_ = {&Controller::clsTable_, NULL, &parent::clsTable_, &clsInfo_}; \
+#define IMPLEMENT_CONTROLLER(cls_name)  \
+	dragon::ClassTable cls_name::clsTable_ = {&Controller::clsTable_, NULL, &clsInfo_}; \
 	dragon::ClassInfo  cls_name::clsInfo_  = {#cls_name, cls_name::Create_}; \
 	Controller *cls_name::Create_()	{		          \
 		return new cls_name; }				  \
@@ -75,7 +75,6 @@ struct ClassInfo{
 struct ClassTable {
 	struct ClassTable *pHead;
 	struct ClassTable *pNext;
-	struct ClassTable *pParent;
 	
 	ClassInfo *pClsInfo;
 };

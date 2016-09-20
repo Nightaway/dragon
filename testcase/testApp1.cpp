@@ -46,7 +46,7 @@ void testApplication::SetAppName()
 
 ////////////////////////  deliveryController ////////////////////
 
-IMPLEMENT_CONTROLLER(Controller, deliveryController)
+IMPLEMENT_CONTROLLER(deliveryController)
 
 BEGIN_ACTION_MAP(deliveryController)
 	ACTION(deliveryController, index)

@@ -16,10 +16,10 @@ function Route(Url) {
 		'QueryString'    : ''
 	};
 
-	console.log("route url:" + Url + "\n");
+	//console.log("route url:" + Url + "\n");
 	var result = regExp.exec(Url);
 
-	console.log(JSON.stringify(result) + '\n');
+	//console.log(JSON.stringify(result) + '\n');
 
 	routingTable.ControllerName = result[1];
 	routingTable.ActionName     = result[2];

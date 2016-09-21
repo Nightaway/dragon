@@ -51,7 +51,7 @@ void collectionController::upload(QueryString &qs)
 
 		init = true;
 	}
-	static Aws::SQS::SQSClient sqsClient(Aws::Auth::AWSCredentials("AKIAI4FFZTQ6F5GYEATQ", "lSgvKDTEwYNLhUJVg//bvAfFo1wtYxB7WDiF22xA"), config);
+	static Aws::SQS::SQSClient sqsClient(Aws::Auth::AWSCredentials("", ""), config);
 
 	if (request->GetMethod() == kHttp_Method_Post && request->GetPost().data != NULL && request->GetPost().len > 0) {
 		Log &log = app->GetErrorLog();

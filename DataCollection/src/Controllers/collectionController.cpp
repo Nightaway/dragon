@@ -92,15 +92,6 @@ void collectionController::upload(QueryString &qs)
 					queueUrl = result.GetQueueUrl();
 				}
 
-				/*rapidjson::Document res;
-				res.SetObject();
-				res.AddMember("key", d["key"], res.GetAllocator());
-				res.AddMember("common", d["common"], res.GetAllocator());
-				res.AddMember("datas", d["datas"],res.GetAllocator());
-				res.AddMember("event", d["event"], res.GetAllocator());
-				rapidjson::Value v_timestamp;
-				v_timestamp.SetInt(time(NULL));
-				res.AddMember("timestamp", v_timestamp, res.GetAllocator());*/
 				rapidjson::Value v_timestamp;
 				v_timestamp.SetInt(time(NULL));
 				d.AddMember("timestamp", v_timestamp, d.GetAllocator());
@@ -109,9 +100,9 @@ void collectionController::upload(QueryString &qs)
 				rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
 				d.Accept(writer);
 
-				Aws::SQS::Model::SendMessageRequest sendMessageRequest1;
-				sendMessageRequest1.SetQueueUrl(queueUrl);
-				sendMessageRequest1.SetMessageBody(buffer.GetString());
+				Aws::SQS::Model::SendMessageRequest sendMessageRequest;
+				sendMessageRequest.SetQueueUrl(queueUrl);
+				sendMessageRequest.SetMessageBody(buffer.GetString());
 				Aws::SQS::Model::SendMessageOutcome sendMessageOutcome = sqsClient.SendMessage(sendMessageRequest1);
 				if (!sendMessageOutcome.IsSuccess() || sendMessageOutcome.GetResult().GetMessageId().length() == 0) {
 					std::stringstream ss;

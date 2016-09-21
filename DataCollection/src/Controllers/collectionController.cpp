@@ -51,7 +51,7 @@ void collectionController::upload(QueryString &qs)
 
 		init = true;
 	}
-	static Aws::SQS::SQSClient sqsClient(Aws::Auth::AWSCredentials("AKIAJXLUWGXZ34TW7REQ", "ELV6V/bg+bg9rOOZYb47HN2oNqac3zGFSgDDXTTC"), config);
+	static Aws::SQS::SQSClient sqsClient(Aws::Auth::AWSCredentials("AKIAI4FFZTQ6F5GYEATQ", "lSgvKDTEwYNLhUJVg//bvAfFo1wtYxB7WDiF22xA"), config);
 
 	if (request->GetMethod() == kHttp_Method_Post && request->GetPost().data != NULL && request->GetPost().len > 0) {
 		Log &log = app->GetErrorLog();
@@ -61,67 +61,62 @@ void collectionController::upload(QueryString &qs)
 		d.Parse((const char *)data);
 
 		if (d.IsObject()) {
-			if (d.HasMember("datas") && d["datas"].IsArray()) {
-				for (int i=0; i<d["datas"].Size(); i++) {
-					const rapidjson::Value &e = d["datas"][i];
-					if (e.HasMember("type") && e["type"].IsString()) {
-						Aws::String queueUrl;
-						std::string type = e["type"].GetString();
-						std::string dc = "dc-";
-						std::string queueName = dc + type;
+			if (d.HasMember("type") && d["type"].IsString()) {
+				Aws::String queueUrl;
+				std::string type = d["type"].GetString();
+				std::string dc = "dc-";
+				std::string queueName = dc + type;
 						
-						Aws::SQS::Model::GetQueueUrlRequest getUrlRequest;
-						getUrlRequest.SetQueueName(queueName.c_str());
-						Aws::SQS::Model::GetQueueUrlOutcome getUrlOutcome = sqsClient.GetQueueUrl(getUrlRequest);
-						if (!getUrlOutcome.IsSuccess()) {
-							std::stringstream ss;
-							ss << "Erron on getUrl:" << getUrlOutcome.GetError().GetMessage();
-							log.LogMsg(ss.str());
+				Aws::SQS::Model::GetQueueUrlRequest getUrlRequest;
+				getUrlRequest.SetQueueName(queueName.c_str());
+				Aws::SQS::Model::GetQueueUrlOutcome getUrlOutcome = sqsClient.GetQueueUrl(getUrlRequest);
+				if (!getUrlOutcome.IsSuccess()) {
+					std::stringstream ss;
+					ss << "Erron on getUrl:" << getUrlOutcome.GetError().GetMessage();
+					log.LogMsg(ss.str());
 
-							Aws::SQS::Model::CreateQueueRequest createRequest;
-							createRequest.SetQueueName(queueName.c_str());
-							Aws::SQS::Model::CreateQueueOutcome createQueueOutcome = sqsClient.CreateQueue(createRequest);
-							if (!createQueueOutcome.IsSuccess()) {
-								std::stringstream ss;
-								ss << "Erron on createQueue:" << createQueueOutcome.GetError().GetMessage();
-								log.LogMsg(ss.str());
-								return ;
-							} else {
-								Aws::SQS::Model::CreateQueueResult result = createQueueOutcome.GetResult();
-								queueUrl = result.GetQueueUrl();
-							}
-						} else {
-							Aws::SQS::Model::GetQueueUrlResult result = getUrlOutcome.GetResult();
-							queueUrl = result.GetQueueUrl();
-						}
-
-						rapidjson::Document res;
-						const rapidjson::Value &event = e["event"];
-						res.SetObject();
-						res.AddMember("key", d["key"], res.GetAllocator());
-						res.AddMember("common", d["common"], res.GetAllocator());
-						rapidjson::Value k_event("event");
-						rapidjson::Value v_event;
-						v_event.SetString(event.GetString(), event.GetStringLength(), res.GetAllocator());
-						res.AddMember(k_event, v_event, res.GetAllocator());
-						rapidjson::Value v_timestamp;
-						v_timestamp.SetInt(time(NULL));
-						res.AddMember("timestamp", v_timestamp, res.GetAllocator());
-
-						rapidjson::StringBuffer buffer;
-						rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-						res.Accept(writer);
-
-						Aws::SQS::Model::SendMessageRequest sendMessageRequest1;
-						sendMessageRequest1.SetQueueUrl(queueUrl);
-						sendMessageRequest1.SetMessageBody(buffer.GetString());
-						Aws::SQS::Model::SendMessageOutcome sendMessageOutcome = sqsClient.SendMessage(sendMessageRequest1);
-						if (!sendMessageOutcome.IsSuccess() || sendMessageOutcome.GetResult().GetMessageId().length() == 0) {
-							std::stringstream ss;
-							ss << "Erron on send:" << sendMessageOutcome.GetError().GetMessage();
-							log.LogMsg(ss.str());
-						}
+					Aws::SQS::Model::CreateQueueRequest createRequest;
+					createRequest.SetQueueName(queueName.c_str());
+					Aws::SQS::Model::CreateQueueOutcome createQueueOutcome = sqsClient.CreateQueue(createRequest);
+					if (!createQueueOutcome.IsSuccess()) {
+						std::stringstream ss;
+						ss << "Erron on createQueue:" << createQueueOutcome.GetError().GetMessage();
+						log.LogMsg(ss.str());
+						return ;
+					} else {
+						Aws::SQS::Model::CreateQueueResult result = createQueueOutcome.GetResult();
+						queueUrl = result.GetQueueUrl();
 					}
+				} else {
+					Aws::SQS::Model::GetQueueUrlResult result = getUrlOutcome.GetResult();
+					queueUrl = result.GetQueueUrl();
+				}
+
+				/*rapidjson::Document res;
+				res.SetObject();
+				res.AddMember("key", d["key"], res.GetAllocator());
+				res.AddMember("common", d["common"], res.GetAllocator());
+				res.AddMember("datas", d["datas"],res.GetAllocator());
+				res.AddMember("event", d["event"], res.GetAllocator());
+				rapidjson::Value v_timestamp;
+				v_timestamp.SetInt(time(NULL));
+				res.AddMember("timestamp", v_timestamp, res.GetAllocator());*/
+				rapidjson::Value v_timestamp;
+				v_timestamp.SetInt(time(NULL));
+				d.AddMember("timestamp", v_timestamp, d.GetAllocator());
+
+				rapidjson::StringBuffer buffer;
+				rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+				d.Accept(writer);
+
+				Aws::SQS::Model::SendMessageRequest sendMessageRequest1;
+				sendMessageRequest1.SetQueueUrl(queueUrl);
+				sendMessageRequest1.SetMessageBody(buffer.GetString());
+				Aws::SQS::Model::SendMessageOutcome sendMessageOutcome = sqsClient.SendMessage(sendMessageRequest1);
+				if (!sendMessageOutcome.IsSuccess() || sendMessageOutcome.GetResult().GetMessageId().length() == 0) {
+					std::stringstream ss;
+					ss << "Erron on send:" << sendMessageOutcome.GetError().GetMessage();
+					log.LogMsg(ss.str());
 				}
 			}
 		}
